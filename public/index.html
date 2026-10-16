@@ -1,0 +1,1892 @@
+<title>漢文 返り点練習</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: one narrow column. The sentence runs top to bottom like real tategaki; each character is a tap tile with its mark at lower left and its reading number at right. Level 1 trains the marks; level 2 teaches one sentence pattern at a time with a pattern card, the sentence, and two 4-choice steps. */
+:root {
+  --bg: #EEF1F5;
+  --card: #FFFFFF;
+  --ink: #18212F;
+  --muted: #566176;
+  --line: #D3D9E3;
+  --mark: #2A4FC4;
+  --mark-soft: #E1E8FB;
+  --on-mark: #FFFFFF;
+  --ok: #18794E;
+  --ok-soft: #DDF2E7;
+  --ng: #B93232;
+  --ng-soft: #FBE3E3;
+  --f-han: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif CJK JP", serif;
+  --f-ui: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111723; --card: #1A2231; --ink: #E7ECF4; --muted: #9AA5B9; --line: #2D3749;
+    --mark: #8FA9FF; --mark-soft: #25314F; --on-mark: #0C1220;
+    --ok: #62D29A; --ok-soft: #153A2A; --ng: #FF9393; --ng-soft: #43212B;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111723; --card: #1A2231; --ink: #E7ECF4; --muted: #9AA5B9; --line: #2D3749;
+  --mark: #8FA9FF; --mark-soft: #25314F; --on-mark: #0C1220;
+  --ok: #62D29A; --ok-soft: #153A2A; --ng: #FF9393; --ng-soft: #43212B;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-ui);
+  font-size: 16px;
+  line-height: 1.75;
+  padding-block: 22px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-tap-highlight-color: transparent;
+}
+.wrap { max-width: 560px; margin-inline: auto; display: flex; flex-direction: column; gap: 18px; }
+.wrap > * { min-width: 0; }
+
+.top { display: flex; flex-direction: column; gap: 4px; }
+.eyebrow { margin: 0; font-size: .82rem; color: var(--muted); letter-spacing: .08em; }
+h1 { margin: 0; font-family: var(--f-han); font-weight: 700; font-size: 2rem; line-height: 1.3; letter-spacing: .04em; text-wrap: balance; }
+.lead { margin: 4px 0 0; color: var(--muted); }
+
+[hidden] { display: none !important; }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tab {
+  appearance: none; min-height: 46px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--card); color: var(--muted); font-family: var(--f-ui); font-weight: 700; font-size: .95rem; cursor: pointer;
+}
+.tab[aria-selected="true"] { background: var(--mark); border-color: var(--mark); color: var(--on-mark); }
+.tab:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.tabs.levels { grid-template-columns: repeat(2, 1fr); }
+.tabs.levels .tab { padding: 0 4px; white-space: nowrap; min-height: 52px; font-size: 1.02rem; }
+.tabs.modes .tab { min-height: 42px; font-size: .9rem; background: transparent; }
+.tabs.modes .tab[aria-selected="true"] { background: var(--mark-soft); border-color: var(--mark); color: var(--mark); }
+
+details.rule { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+details.rule summary { cursor: pointer; font-weight: 700; }
+details.rule summary:focus-visible { outline: 2px solid var(--mark); outline-offset: 4px; border-radius: 4px; }
+.rule-body { display: flex; flex-direction: column; gap: 14px; margin-top: 12px; }
+.rule-body p { margin: 0; }
+.rule-body .term { font-weight: 700; }
+.ex { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-top: 8px; }
+.ex .yomi-mini { font-family: var(--f-han); font-weight: 700; font-size: 1.05rem; }
+
+.q { display: flex; flex-direction: column; gap: 14px; scroll-margin-top: 12px; }
+.q-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.q-no { font-weight: 700; font-variant-numeric: tabular-nums; }
+.tag { font-size: .82rem; color: var(--mark); background: var(--mark-soft); padding: 2px 10px; border-radius: 999px; font-weight: 500; }
+
+.yomibox { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; display: flex; flex-direction: column; }
+.yomibox p { margin: 0; }
+.label { font-size: .78rem; color: var(--muted); letter-spacing: .08em; }
+.yomi-q { font-family: var(--f-han); font-weight: 700; font-size: 1.35rem; line-height: 1.6; }
+
+.lesson { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.lesson p { margin: 0; }
+.lname { font-family: var(--f-han); font-weight: 700; font-size: 1.5rem; line-height: 1.3; }
+.lrow { display: grid; grid-template-columns: 4.2rem 1fr; gap: 8px; align-items: baseline; }
+.lrow .lv { font-family: var(--f-han); font-weight: 700; font-size: 1.05rem; line-height: 1.55; }
+.lrow .lt { font-size: .92rem; line-height: 1.65; }
+
+.paper { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 12px; display: flex; flex-direction: row-reverse; justify-content: center; align-items: flex-start; gap: 16px; }
+.paper-label { margin: 4px 0 0; writing-mode: vertical-rl; font-size: .8rem; color: var(--muted); letter-spacing: .3em; }
+.chars { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+
+.cell {
+  appearance: none; margin: 0; padding: 0; font: inherit; color: inherit; text-align: center;
+  --mw: 1.7rem; --cw: 3.2rem; --ow: 1.9rem; --hh: 3.5rem;
+  display: grid; grid-template-columns: var(--mw) var(--cw) var(--ow); grid-template-rows: var(--hh);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+}
+button.cell { cursor: pointer; }
+button.cell:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.cell.sel { border-color: var(--mark); box-shadow: 0 0 0 2px var(--mark); background: var(--mark-soft); }
+.cell.picked { border-color: var(--mark); background: var(--mark-soft); }
+.cell.ng { border-color: var(--ng); background: var(--ng-soft); }
+.cell.ok { border-color: var(--ok); background: var(--ok-soft); }
+.ord { grid-column: 3; grid-row: 1; display: flex; flex-direction: column; gap: 2px; align-items: center; justify-content: center; font-size: .62rem; color: var(--muted); }
+.ord b {
+  display: grid; place-items: center; width: 1.3rem; height: 1.3rem; border-radius: 50%;
+  background: var(--ink); color: var(--bg); font-size: .78rem; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.ord.skip { writing-mode: vertical-rl; letter-spacing: .05em; }
+.ch { grid-column: 2; grid-row: 1; display: grid; place-items: center; font-family: var(--f-han); font-weight: 500; font-size: 2.5rem; line-height: 1; }
+.mk { grid-column: 1; grid-row: 1; align-self: end; justify-self: end; padding-bottom: .15rem; font-family: var(--f-han); font-weight: 700; font-size: 1.15rem; line-height: 1; color: var(--mark); white-space: nowrap; }
+
+.chars.mini { gap: 4px; }
+.mini .cell { --mw: 1.2rem; --cw: 2.3rem; --ow: 1.6rem; --hh: 2.5rem; border-radius: 8px; }
+.mini .ord b { width: 1.1rem; height: 1.1rem; font-size: .68rem; }
+.mini .ch { font-size: 1.8rem; }
+.mini .mk { font-size: .9rem; }
+
+.palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.pbtn {
+  appearance: none; min-height: 52px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--card); color: var(--mark); font-family: var(--f-han); font-weight: 700; font-size: 1.4rem; cursor: pointer;
+}
+.pbtn.erase { font-family: var(--f-ui); font-size: .95rem; font-weight: 500; color: var(--muted); }
+.pbtn:hover:not(:disabled) { background: var(--mark-soft); }
+.pbtn:active:not(:disabled) { transform: translateY(1px); }
+.pbtn:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.pbtn:disabled { opacity: .4; cursor: default; }
+
+.ask { display: flex; flex-direction: column; gap: 8px; }
+.ask p { margin: 0; }
+.qtext { font-weight: 700; }
+.gotline { background: var(--ok-soft); border: 1px solid var(--ok); border-radius: 10px; padding: 8px 12px; display: flex; flex-direction: column; }
+.gotline p { margin: 0; }
+.gotline .yomi { font-family: var(--f-han); font-weight: 700; font-size: 1.2rem; }
+.opts { display: flex; flex-direction: column; gap: 8px; }
+.opt {
+  appearance: none; display: grid; grid-template-columns: 1.8rem 1fr; gap: 10px; align-items: center; text-align: left;
+  min-height: 54px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--card); color: var(--ink); font-family: var(--f-han); font-weight: 500; font-size: 1.12rem; line-height: 1.5; cursor: pointer;
+}
+.opt.plain { font-family: var(--f-ui); font-size: 1rem; }
+.opt .ltr {
+  display: grid; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 50%; border: 1px solid var(--line);
+  font-family: var(--f-ui); font-size: .8rem; font-weight: 700; color: var(--muted);
+}
+.opt:hover:not(:disabled) { background: var(--mark-soft); }
+.opt:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.opt.wrong { border-color: var(--ng); background: var(--ng-soft); }
+.opt:disabled { cursor: default; }
+
+.hint { margin: -2px 0 0; font-size: .92rem; color: var(--muted); }
+.hint.bad { color: var(--ng); font-weight: 700; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn {
+  appearance: none; min-height: 48px; padding: 0 22px; border-radius: 10px;
+  border: 1px solid var(--mark); background: var(--mark); color: var(--on-mark);
+  font-family: var(--f-ui); font-weight: 700; font-size: 1rem; cursor: pointer;
+}
+.btn.ghost { background: transparent; color: var(--mark); }
+.btn:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.btn:active { transform: translateY(1px); }
+
+.result { border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--line); }
+.result.ok { background: var(--ok-soft); border-color: var(--ok); }
+.result.shown { background: var(--card); }
+.result p { margin: 0; }
+.verdict { font-family: var(--f-han); font-weight: 700; font-size: 1.5rem; line-height: 1.4; }
+.result.ok .verdict { color: var(--ok); }
+.sub { color: var(--muted); font-size: .92rem; }
+.blk { display: flex; flex-direction: column; gap: 0; }
+.result .yomi { font-family: var(--f-han); font-weight: 700; font-size: 1.35rem; line-height: 1.6; }
+.result .body { line-height: 1.7; }
+.result .order-line { font-family: var(--f-han); font-weight: 700; font-size: 1.15rem; }
+
+.dots { display: flex; flex-wrap: wrap; gap: 8px; }
+.dot {
+  appearance: none; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line);
+  background: var(--card); color: var(--muted); font-family: var(--f-ui); font-weight: 700; font-size: .9rem;
+  font-variant-numeric: tabular-nums; cursor: pointer;
+}
+.dot.done { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+.dot.cur { box-shadow: 0 0 0 2px var(--mark); color: var(--mark); border-color: var(--mark); }
+.dot:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  appearance: none; min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--card); color: var(--ink); font-family: var(--f-ui); font-weight: 700; font-size: .88rem; cursor: pointer;
+}
+.chip small { font-weight: 500; color: var(--muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.chip[aria-pressed="true"] { background: var(--mark-soft); border-color: var(--mark); color: var(--mark); }
+.chip.alldone { border-color: var(--ok); }
+.chip:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.vwrap { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 12px; display: flex; flex-direction: column; gap: 10px; }
+.vtabs { display: flex; gap: 8px; }
+.vtabs .chip { flex: 1; }
+.vert { writing-mode: vertical-rl; font-family: var(--f-han); font-weight: 500; font-size: 1.2rem; line-height: 1.9; height: 19em; overflow-x: auto; overflow-y: hidden; padding: 4px 6px; margin: 0 auto; max-width: 100%; }
+.vert.shi { font-size: 1.4rem; }
+.vert p { margin: 0 0 0 .6em; }
+.vert.kun { line-height: 2.3; }
+.vert.kun p { margin-left: .2em; }
+.k { position: relative; display: inline-block; }
+.k .m { position: absolute; left: 0; bottom: .05em; writing-mode: horizontal-tb; font-size: .5em; line-height: 1; font-weight: 700; color: var(--mark); letter-spacing: -.12em; white-space: nowrap; }
+.k.lk::after { content: ""; position: absolute; left: .35em; bottom: -.28em; height: .56em; border-left: 1.5px solid var(--mark); }
+.k.sk { color: var(--muted); }
+.vtabs .chip { padding: 0 6px; font-size: .84rem; }
+.vert.shi p { margin-left: .9em; }
+.hl { color: var(--mark); font-weight: 700; background: var(--mark-soft); border-radius: 4px; }
+.vnote { margin: 0; font-size: .82rem; color: var(--muted); }
+.notes { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; font-size: .88rem; color: var(--muted); }
+.notes b { color: var(--ink); font-family: var(--f-han); }
+.q3q { margin: 0; font-weight: 700; line-height: 1.6; }
+.foot { margin: 0; font-size: .82rem; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<main class="wrap">
+  <header class="top">
+    <p class="eyebrow" id="eyebrow">漢文 ・ レベル1 基礎</p>
+    <h1 id="h1">返り点の練習</h1>
+    <p class="lead" id="lead"></p>
+  </header>
+
+  <div class="tabs levels" role="tablist" aria-label="レベル">
+    <button type="button" class="tab" role="tab" data-level="1" aria-selected="true">1　返り点</button>
+    <button type="button" class="tab" role="tab" data-level="2" aria-selected="false">2　句形</button>
+    <button type="button" class="tab" role="tab" data-level="3" aria-selected="false">3　文章・漢詩</button>
+    <button type="button" class="tab" role="tab" data-level="4" aria-selected="false">4　重要語</button>
+  </div>
+
+  <div class="tabs modes" id="modes" role="tablist" aria-label="練習のやり方">
+    <button type="button" class="tab" role="tab" data-mode="yomu" aria-selected="true">① 読む順を答える</button>
+    <button type="button" class="tab" role="tab" data-mode="tsukeru" aria-selected="false">② 返り点を付ける</button>
+  </div>
+
+  <details class="rule" id="rule">
+    <summary>返り点のルール（困ったらここ）</summary>
+    <div class="rule-body">
+      <div>
+        <p><span class="term">レ点</span>　下の字を先に読んで、すぐ上の字にもどる。レ点は、もどる先（上の字）の左下に付く。</p>
+        <div class="ex" id="ex1"></div>
+      </div>
+      <div>
+        <p><span class="term">一二点</span>　一の字を読んだら、二の字にもどる。間に字があっても、まとめて先に読む。三まであれば、一→二→三の順。</p>
+        <div class="ex" id="ex2"></div>
+      </div>
+      <p><span class="term">置き字</span>　於・而・矣 などは、読まないことが多い。番号は付けず、とばして読む。</p>
+      <p><span class="term">読む順</span>　返り点のない字は、上から下へ読む。ただし、返り点で「先に読む字」がある字は、あとまわしにする。</p>
+    </div>
+  </details>
+
+  <section class="q" id="qtop">
+    <div class="q-head">
+      <span class="q-no" id="qno">1 / 10</span>
+      <span class="tag" id="qtag">レ点</span>
+    </div>
+    <div class="yomibox" id="yomibox" hidden>
+      <p class="label">読み方</p>
+      <p class="yomi-q" id="yomiq"></p>
+    </div>
+    <div class="paper">
+      <p class="paper-label" id="plabel">返り点つき</p>
+      <div class="chars" id="chars"></div>
+    </div>
+    <div class="palette" id="palette" hidden>
+      <button type="button" class="pbtn" data-m="レ" aria-label="レ点">レ</button>
+      <button type="button" class="pbtn" data-m="一" aria-label="一点">一</button>
+      <button type="button" class="pbtn" data-m="二" aria-label="二点">二</button>
+      <button type="button" class="pbtn" data-m="三" aria-label="三点">三</button>
+      <button type="button" class="pbtn erase" data-m="" aria-label="返り点を消す">消す</button>
+    </div>
+    <p class="hint" id="hint"></p>
+    <div class="actions" id="actions">
+      <button type="button" class="btn" id="check">答え合わせ</button>
+      <button type="button" class="btn ghost" id="clear">全部消す</button>
+      <button type="button" class="btn ghost" id="show" hidden>正解を見る</button>
+    </div>
+    <div id="result" role="status" hidden></div>
+  </section>
+
+  <section class="q" id="q2top" hidden>
+    <nav class="chips" id="groups" aria-label="句形を選ぶ"></nav>
+    <div class="q-head">
+      <span class="q-no" id="q2no">1 / 10</span>
+      <span class="tag" id="q2tag">使役</span>
+    </div>
+    <div class="lesson" id="lesson">
+      <p class="label">今回の句形</p>
+      <p class="lname" id="lname"></p>
+      <div class="lrow"><span class="label">型</span><span class="lv" id="lkata"></span></div>
+      <div class="lrow"><span class="label">読み方</span><span class="lv" id="lyomi"></span></div>
+      <div class="lrow"><span class="label">ポイント</span><span class="lt" id="lpoint"></span></div>
+    </div>
+    <div class="paper">
+      <p class="paper-label">返り点つき</p>
+      <div class="chars" id="chars2"></div>
+    </div>
+    <div class="ask" id="ask">
+      <div class="gotline" id="gotline" hidden>
+        <p class="label">書き下し文</p>
+        <p class="yomi" id="gotyomi"></p>
+      </div>
+      <p class="qtext" id="qtext2"></p>
+      <div class="opts" id="opts"></div>
+    </div>
+    <p class="hint" id="hint2"></p>
+    <div id="result2" role="status" hidden></div>
+  </section>
+
+  <section class="q" id="q3top" hidden>
+    <div class="q-head">
+      <span class="q-no" id="q3no">1 / 5</span>
+      <span class="tag" id="q3tag">文章</span>
+    </div>
+    <p class="lname" id="q3title"></p>
+    <div class="vwrap">
+      <div class="vtabs" role="tablist" aria-label="表示の切りかえ">
+        <button type="button" class="chip" data-v="kun" aria-pressed="true">返り点つき</button>
+        <button type="button" class="chip" data-v="yomi" aria-pressed="false">書き下し文</button>
+        <button type="button" class="chip" data-v="bai" aria-pressed="false">白文</button>
+      </div>
+      <div class="vert" id="vert"></div>
+      <p class="vnote" id="vnote" hidden>縦書きは右から左へ読む。左にもつづくので、横にスクロールしてね。</p>
+      <ul class="notes" id="notes" aria-label="注"></ul>
+    </div>
+    <div class="ask">
+      <p class="label" id="q3label"></p>
+      <p class="q3q" id="q3q"></p>
+      <div class="opts" id="opts3"></div>
+    </div>
+    <p class="hint" id="hint3"></p>
+    <div id="result3" role="status" hidden></div>
+  </section>
+
+  <section class="q" id="q4top" hidden>
+    <nav class="chips" id="groups4" aria-label="語のグループを選ぶ"></nav>
+    <div class="q-head">
+      <span class="q-no" id="q4no">1 / 44</span>
+      <span class="tag" id="q4tag">副詞・接続</span>
+    </div>
+    <div class="vwrap">
+      <div class="vert" id="vert4"></div>
+    </div>
+    <div class="gotline" id="got4">
+      <p class="label">書き下し文</p>
+      <p class="yomi" id="gotyomi4"></p>
+    </div>
+    <div class="ask">
+      <p class="q3q" id="q4q"></p>
+      <div class="opts" id="opts4"></div>
+    </div>
+    <p class="hint" id="hint4"></p>
+    <div id="result4" role="status" hidden></div>
+  </section>
+
+  <nav class="dots" id="dots" aria-label="問題の一覧"></nav>
+  <p class="foot">レベル1は10題（2つのやり方）、レベル2は19の句形グループ・計53題、レベル3は文章16本（20〜180字）・漢詩6首、レベル4は重要語44語です。</p>
+</main>
+
+<script>
+/* ===== データと読む順の計算（画面に依存しない部分） ===== */
+const Q = [
+  { id: 'k01', tag: 'レ点', bai: '猫窺鼠', key: ['', 'レ', ''], skip: [],
+    yomi: '猫、鼠を窺ふ。', yaku: '猫が、ねずみの様子をうかがっている。',
+    tip: 'レ点は「下の字を先に読んで、すぐ上の字にもどる」合図。鼠を読んでから窺にもどるので、レ点は窺に付く。' },
+  { id: 'k02', tag: 'レ点', bai: '人皆有死', key: ['', '', 'レ', ''], skip: [],
+    yomi: '人皆死有り。', yaku: '人はみな、いつかは死ぬ。',
+    tip: '死を先に読んで、有にもどる。だから有にレ点。「皆」は返り点なしで、そのまま読む。' },
+  { id: 'k03', tag: 'レ点と「不」', bai: '君子不争', key: ['', '', 'レ', ''], skip: [],
+    yomi: '君子は争はず。', yaku: '立派な人は、人と争わない。',
+    tip: '「不」は、いつも最後に読む字。争を読んでから不にもどるので、不にレ点を付ける。' },
+  { id: 'k04', tag: 'レ点が続く', bai: '吾不読書', key: ['', 'レ', 'レ', ''], skip: [],
+    yomi: '吾、書を読まず。', yaku: '私は本を読まない。',
+    tip: 'レ点が2つ続くと、下から上へ1字ずつもどる。書 → 読 → 不 の順。レ点は不と読に付く。' },
+  { id: 'k05', tag: '禁止とレ点', bai: '勿忘恩', key: ['レ', 'レ', ''], skip: [],
+    yomi: '恩を忘るること勿かれ。', yaku: '受けた恩を忘れてはいけない。',
+    tip: '「勿」は「〜こと勿かれ」と読む禁止の字で、最後に読む。レ点が続くので、恩 → 忘 → 勿 の順。' },
+  { id: 'k06', tag: '一二点', bai: '登高山', key: ['二', '', '一'], skip: [],
+    yomi: '高山に登る。', yaku: '高い山に登る。',
+    tip: '一二点は、間に字があってもまとめて先に読む。高 → 山と読んでから、山の一から登の二へもどる。' },
+  { id: 'k07', tag: '一二点', bai: '渡大河', key: ['二', '', '一'], skip: [],
+    yomi: '大河を渡る。', yaku: '大きな川を渡る。',
+    tip: '「大河」の2字をまとめて先に読み、河の一から渡の二へもどる。' },
+  { id: 'k08', tag: '一二点と置き字', bai: '学於師', key: ['二', '', '一'], skip: [1],
+    yomi: '師に学ぶ。', yaku: '先生について学ぶ。',
+    tip: '於は読まない「置き字」。師を読んだら、一から二（学）へもどる。「に」は送りがなとして師に付く。' },
+  { id: 'k09', tag: '一二点（目的語が2つ）', bai: '賜臣金', key: ['二', '', '一'], skip: [],
+    yomi: '臣に金を賜ふ。', yaku: '主君が家来に、お金をくださる。',
+    tip: '「臣に」「金を」の順に読んでから、賜にもどる。間の字（臣）には返り点を付けない。' },
+  { id: 'k10', tag: '一二三点と置き字', bai: '問道於師', key: ['三', '二', '', '一'], skip: [2],
+    yomi: '師に道を問ふ。', yaku: '先生に、生き方を尋ねる。',
+    tip: '一 → 二 → 三と、数字の順に進む。師（一）→ 道（二）→ 問（三）。於は読まない。' }
+];
+
+const EX = [
+  { bai: '飲水', marks: ['レ', ''], skip: [], yomi: '→ 水を飲む' },
+  { bai: '入深山', marks: ['二', '', '一'], skip: [], yomi: '→ 深山に入る' }
+];
+
+const LESSONS = {
+  shieki: { name: '使役', kata: '使（令・教・遣） A V', yomi: 'AをしてVせしむ',
+    point: '「〜させる」の意味。使は、いちばん最後に「しむ」と読む。' },
+  ukemi: { name: '受身', kata: '見（被）V　／　V於A　／　為A所V', yomi: 'Vらる　／　AにVらる　／　AのVする所と為る',
+    point: '「〜される」の意味。見・被が動詞の前にあるとき、「V於A」（於は読まない）、「為A所V」（為は最後に読む）の三つの形。' },
+  gimon: { name: '疑問', kata: '何・誰・安 など　／　〜乎', yomi: '何をか〜　／　〜か',
+    point: '疑問の字は、目的語でも動詞の前に来る。文末の「乎」は「か」と読む。' },
+  hango: { name: '反語', kata: '豈〜乎　／　豈非A乎', yomi: '豈に〜んや　／　豈にAに非ずや',
+    point: '「どうして〜か、いや、〜ない」。たずねる形で、実は強い打ち消し。「非」が入ると、意味は肯定になる。' },
+  hikaku: { name: '比較', kata: 'A 不如 B　／　A C 於 B', yomi: 'AはBに如かず　／　AはBよりCなり',
+    point: '「如かず」は「及ばない」。於で比べるときは「より」と読み、於は読まない。' }
+};
+
+const P_OLD = [
+  { id: 'p01', lesson: 'shieki', bai: '使人行', key: ['二', '', '一'], skip: [],
+    yomi: '人をして行かしむ。', yaku: '人を行かせる。',
+    tip: '使は使役の字。「AをしてVせしむ」と読み、使は最後。読む順は 人 → 行 → 使。',
+    r1: { ans: 1, opts: ['使ひ人行く。', '人をして行かしむ。', '人を使ひて行く。', '人行きて使ふ。'],
+      why: ['使を最初に読んでいる。二点があるので、使は最後。', '', '「使ふ」ではなく「しむ」と読む。', '一二点を見落としている。使は人・行のあと。'] },
+    r2: { ans: 2, opts: ['人が行かされる。', '人が行って使いをする。', '人を行かせる。', '人が行くのをとめる。'],
+      why: ['受身になっている。人は、行かされる側。', '「使」を使いの意味に取っている。ここは使役。', '', '「使」に、とめる意味はない。'] } },
+  { id: 'p02', lesson: 'shieki', bai: '使人読書', key: ['二', '', '一レ', ''], skip: [],
+    yomi: '人をして書を読ましむ。', yaku: '人に本を読ませる。',
+    tip: '読には「一レ点」。書を読んだあと読にもどり、さらに使へもどる。読む順は 人 → 書 → 読 → 使。',
+    r1: { ans: 3, opts: ['人を使ひて書を読む。', '使ひて人書を読む。', '人書を読みて使ふ。', '人をして書を読ましむ。'],
+      why: ['「使ふ」ではなく「しむ」と読む。', '使を最初に読んでいる。使は最後。', '読む順がちがう。書 → 読 → 使 の順。', ''] },
+    r2: { ans: 0, opts: ['人に本を読ませる。', '人が本を読むのをやめさせる。', '本を読んで、人に使われる。', '人が読んだ本を使う。'],
+      why: ['', '「やめさせる」の意味はない。', '使役を受身に取りちがえている。', '「使」を「使う」と取っている。'] } },
+  { id: 'p03', lesson: 'ukemi', bai: '吾見欺', key: ['', 'レ', ''], skip: [],
+    yomi: '吾、欺かる。', yaku: '私はだまされた。',
+    tip: '「見」は動詞の前に付いて受身を表す。「見V」で「Vらる」。読む順は 吾 → 欺 → 見。',
+    r1: { ans: 0, opts: ['吾、欺かる。', '吾、欺くを見る。', '吾、見て欺く。', '吾、欺きて見る。'],
+      why: ['', '「見る」と読むと、受身にならない。', '見を先に読んでいる。レ点があるので、見は欺のあと。', '「見る」の意味に取っている。見は受身の字。'] },
+    r2: { ans: 3, opts: ['私がだました。', '私がだますのを見た。', '私はだまさなかった。', '私はだまされた。'],
+      why: ['受身を、する側に取りちがえている。', '「見る」の意味に取っている。', '打ち消しの字（不・非）はない。', ''] } },
+  { id: 'p04', lesson: 'ukemi', bai: '魚食於猫', key: ['', '二', '', '一'], skip: [2],
+    yomi: '魚、猫に食はる。', yaku: '魚が猫に食べられる。',
+    tip: '「V於A」の形は受身で、「AにVらる」と読む。於は読まない。読む順は 魚 → 猫 → 食。',
+    r1: { ans: 3, opts: ['魚、猫を食ふ。', '猫、魚に食はる。', '魚、猫に食らふ。', '魚、猫に食はる。'],
+      why: ['食べる側と食べられる側が逆になっている。', '主語がちがう。白文の最初は魚。', '「食らふ」だと、食べる意味のまま。受身は「食はる」。', ''] },
+    r2: { ans: 0, opts: ['魚が猫に食べられる。', '魚が猫を食べる。', '猫が魚に食べられる。', '魚が猫のそばで食べる。'],
+      why: ['', '食べる側が逆になっている。', '主語が逆になっている。', '「於」を場所に取っている。ここは受身の「に」。'] } },
+  { id: 'p05', lesson: 'gimon', bai: '汝何求', key: ['', '', ''], skip: [],
+    yomi: '汝、何をか求むる。', yaku: 'あなたは何を求めるのか。',
+    tip: '疑問の字「何」は、目的語でも動詞の前に来る。だから返り点はいらず、白文の順に読む。',
+    r1: { ans: 2, opts: ['汝、何を求めんや。', '汝、何ぞ求めざる。', '汝、何をか求むる。', '汝、求むるを何せん。'],
+      why: ['「んや」は反語の読み。疑問は「何をか〜（連体形）」。', '「何ぞ〜ざる」は別の形。不の字はない。', '', '語順を入れかえてしまっている。'] },
+    r2: { ans: 1, opts: ['あなたは何も求めない。', 'あなたは何を求めるのか。', 'あなたはどうして求めるのか。', 'あなたは何を求めようか、いや求めない。'],
+      why: ['「何」は疑問の字。「何も〜ない」ではない。', '', '理由をたずねるのは「何ぞ」。ここは「何を」。', '反語になっている。文末に乎・哉などがない。'] } },
+  { id: 'p06', lesson: 'gimon', bai: '汝知此人乎', key: ['', '二', '', '一', ''], skip: [],
+    yomi: '汝、此の人を知るか。', yaku: 'あなたはこの人を知っているか。',
+    tip: '文末の「乎」は「か」と読む疑問の字。読む順は 汝 → 此 → 人 → 知 → 乎。',
+    r1: { ans: 3, opts: ['汝、此の人を知らず。', '汝、知る此の人を。', '汝、此の人を知れ。', '汝、此の人を知るか。'],
+      why: ['打ち消しの字（不・非）はない。', '一二点がある。知は、此人のあと。', '乎は命令ではなく疑問。「か」と読む。', ''] },
+    r2: { ans: 2, opts: ['あなたはこの人を知らない。', 'あなたはこの人を知りなさい。', 'あなたはこの人を知っているか。', 'あなたの知っている人はいない。'],
+      why: ['打ち消しの字はない。', '命令ではない。乎は疑問。', '', '打ち消しにしてしまっている。'] } },
+  { id: 'p07', lesson: 'hango', bai: '豈可忘恩乎', key: ['', 'レ', 'レ', '', ''], skip: [],
+    yomi: '豈に恩を忘るべけんや。', yaku: 'どうして恩を忘れてよいだろうか、いや、忘れてはならない。',
+    tip: '「豈〜乎」は反語で、「豈に〜んや」と読む。読む順は 豈 → 恩 → 忘 → 可 → 乎。',
+    r1: { ans: 2, opts: ['豈に恩を忘るべからず。', '恩を豈に忘るべけんや。', '豈に恩を忘るべけんや。', '豈に忘るべけんや恩を。'],
+      why: ['打ち消しの字はない。乎を「んや」と読んで結ぶ。', '豈は最初に読む字。恩より先。', '', '読む順がちがう。恩 → 忘 → 可 の順。'] },
+    r2: { ans: 3, opts: ['恩を忘れてよいかどうか、たずねている。', '恩を忘れてよい。', '恩を忘れたのは誰か。', 'どうして恩を忘れてよいだろうか、いや、忘れてはならない。'],
+      why: ['疑問ではなく反語。答えは「いや、ならない」。', '反語は、言葉とは逆の意味を強く言う。', '誰を問う字（誰・孰）はない。', ''] } },
+  { id: 'p08', lesson: 'hango', bai: '豈非天命乎', key: ['', '二', '', '一', ''], skip: [],
+    yomi: '豈に天命に非ずや。', yaku: 'これはまさに天命ではないか。',
+    tip: '「豈非A乎」は「豈にAに非ずや」。「Aではないか、いや、Aだ」と、肯定を強く言う。',
+    r1: { ans: 0, opts: ['豈に天命に非ずや。', '豈に天命ならんや。', '天命に豈に非ずや。', '豈に非ず天命や。'],
+      why: ['', '「非」を読み落としている。非があると、意味が逆になる。', '豈は最初に読む字。', '一二点がある。非は、天命のあと。'] },
+    r2: { ans: 3, opts: ['これは天命ではない。', 'これは天命なのかどうか、たずねている。', 'これが天命でないことを望む。', 'これはまさに天命ではないか。'],
+      why: ['非を見落とすと、この意味になる。非があるので肯定になる。', '疑問ではなく反語。', '願望の字（願・欲）はない。', ''] } },
+  { id: 'p09', lesson: 'hikaku', bai: '百聞不如一見', key: ['', '', 'レ', '二', '', '一'], skip: [],
+    yomi: '百聞は一見に如かず。', yaku: '百回聞くよりも、一度見るほうがまさる。',
+    tip: '「A不如B」は「AはBに如かず」。AよりBのほうがまさる。「如」は「及ぶ」、不が付いて「及ばない」。',
+    r1: { ans: 1, opts: ['一見は百聞に如かず。', '百聞は一見に如かず。', '百聞は一見に如く。', '百聞は一見を如かず。'],
+      why: ['主語と、比べる相手が逆。', '', '不を読み落としている。「如かず」と打ち消す。', '「に如かず」と読む。「を」では読まない。'] },
+    r2: { ans: 3, opts: ['百回聞くことは、一度見ることと同じだ。', '一度見るよりも、百回聞くほうがまさる。', '百回聞いても、一度も見ない。', '百回聞くよりも、一度見るほうがまさる。'],
+      why: ['「如」を「同じ」と取っている。不が付くと「及ばない」。', '比べる側が逆。まさるのは「一見」。', '見ない、という意味ではない。', ''] } },
+  { id: 'p10', lesson: 'hikaku', bai: '此山高於彼山', key: ['', '', '二', '', '', '一'], skip: [3],
+    yomi: '此の山は彼の山より高し。', yaku: 'この山はあの山より高い。',
+    tip: '「A C 於 B」は「AはBよりCなり」。於は読まず、Bに「より」の送りがなが付く。読む順は 此 → 山 → 彼 → 山 → 高。',
+    r1: { ans: 3, opts: ['彼の山は此の山より高し。', '此の山は彼の山に高し。', '此の山と彼の山とは高し。', '此の山は彼の山より高し。'],
+      why: ['AとBが逆。白文の最初は「此山」。', '「より」と読む。「に」では比較にならない。', '比べていない。「於」は「より」。', ''] },
+    r2: { ans: 2, opts: ['この山はあの山と同じくらい高い。', 'この山もあの山も高い。', 'この山はあの山より高い。', 'あの山はこの山より高い。'],
+      why: ['同じ高さとは言っていない。', '比べている文。ただ「高い」だけではない。', '', 'この山とあの山が逆になっている。'] } }
+];
+
+function has(m, c) { return m.indexOf(c) >= 0; }
+function readOrder(marks, skip, re) {
+  skip = skip || []; re = re || [];
+  const n = marks.length, cnt = Array(n).fill(0), order = [];
+  function go(j) {
+    if (j < 0 || j >= n) return;
+    const max = re.indexOf(j) >= 0 ? 2 : 1;
+    if (cnt[j] >= max) return;
+    cnt[j] += 1; order.push(j);
+    const m = marks[j];
+    let jumped = false;
+    if (has(m, '一')) { const k = marks.findIndex(function (x) { return has(x, '二'); }); if (k >= 0) { go(k); jumped = true; } }
+    else if (has(m, '二')) { const k = marks.findIndex(function (x) { return has(x, '三'); }); if (k >= 0) { go(k); jumped = true; } }
+    if (!jumped && j > 0 && has(marks[j - 1], 'レ')) go(j - 1);
+  }
+  for (let i = 0; i < n; i++) {
+    if (cnt[i] > 0 || skip.indexOf(i) >= 0) continue;
+    if (re.indexOf(i) >= 0) { cnt[i] = 1; order.push(i); continue; }
+    const m = marks[i];
+    if (has(m, 'レ') || has(m, '二') || has(m, '三')) continue;
+    go(i);
+  }
+  return order;
+}
+// 問題を作る補助。a / b は「まちがいの選択肢3つ [文, なぜちがうか]」。pa / pb は正解を置く位置(0-3)
+function Z(id, lesson, bai, key, o) {
+  function mkr(right, wrong, pos) {
+    const opts = wrong.map(function (w) { return w[0]; }), why = wrong.map(function (w) { return w[1]; });
+    opts.splice(pos, 0, right); why.splice(pos, 0, '');
+    return { ans: pos, opts: opts, why: why };
+  }
+  return { id: id, lesson: lesson, bai: bai, key: key, skip: o.skip || [], re: o.re || [], ex: o.ex,
+    yomi: o.yomi, yaku: o.yaku, tip: o.tip,
+    r1: mkr(o.yomi, o.a, o.pa), r2: mkr(o.yaku, o.b, o.pb) };
+}
+
+const LESSONS_A = {
+  hitei:  { group: '否定', name: '否定', kata: '不（弗）V　／　無（莫）A', yomi: 'Vず　／　Aなし', point: '不は動詞の前について「〜ず」。無・莫は「〜なし」。どれもレ点が付くと、最後に読む。' },
+  nijuu:  { group: '二重否定', name: '二重否定', kata: '莫（無）不 V　／　不可不 V', yomi: 'Vせざるは莫し　／　Vざるべからず', point: '否定が二つ重なると、強い肯定になる。「〜しない者はいない」「〜しなければならない」。' },
+  bubun:  { group: '部分否定', name: '部分否定', kata: '不 常（必・復）V', yomi: '常には（必ずしも）Vず', point: '不が副詞の前にあると「いつも〜とは限らない」。副詞が不の前にあると、全部否定（いつも〜ない）。' },
+  kinshi: { group: '禁止', name: '禁止', kata: '勿（莫・無）V　／　不可 V', yomi: 'Vする勿かれ　／　Vすべからず', point: '「〜するな」「〜してはならない」。勿・莫・無は「なかれ」、不可は「べからず」と読む。' },
+  saiMi:  { group: '再読文字', name: '再読文字 未', kata: '未 V', yomi: '未だVず', point: '再読文字は、一字を二度読む。最初は字の読みで、あとで下から返ってきて、もう一度読む。未は「未だ〜ず」。' },
+  saiMasa:{ group: '再読文字', name: '再読文字 将・且', kata: '将（且）V', yomi: '将にVんとす', point: '「今にも〜しようとする」「これから〜しようとする」。最初に「将に」、最後に「〜んとす」。' },
+  saiTou: { group: '再読文字', name: '再読文字 当・応', kata: '当（応）V', yomi: '当にVべし', point: '当は「当然〜すべきだ」、応は「きっと〜だろう」。どちらも最後は「べし」。' },
+  saiSube:{ group: '再読文字', name: '再読文字 須・宜', kata: '須（宜）V', yomi: '須らくVべし', point: '須は「ぜひ〜する必要がある」、宜は「〜するのがよい」。最後は「べし」。須は「すべて」ではない。' },
+  saiNao: { group: '再読文字', name: '再読文字 猶・由', kata: '猶（由）A', yomi: '猶ほAのごとし', point: '「ちょうど〜のようだ」。最初に「猶ほ」、最後に「ごとし」。' },
+  saiNanzo:{ group: '再読文字', name: '再読文字 盍', kata: '盍 V', yomi: '盍ぞVざる', point: '「どうして〜しないのか」「〜したらどうか」。何不（なんぞ〜ざる）の意味。' }
+};
+const P_A = [
+Z('a01','hitei','我不知其名',['','レ','二','','一'],{ ex:'我其名知不', pa:0, pb:2,
+  yomi:'我、其の名を知らず。', yaku:'私はその名前を知らない。',
+  tip:'不は動詞の前について「〜ず」と読む打ち消しの字。レ点が付くので、不は最後に読む。読む順は 我 → 其 → 名 → 知 → 不。',
+  a:[['我、其の名を知る。','不を読み落としている。打ち消しの「ず」が必要。'],['我、知りて其の名ならず。','読む順がちがう。其・名 → 知 → 不 の順。'],['我、其の名を知るべからず。','「べからず」は不可の読み。ここに可はない。']],
+  b:[['私はその名前を知っている。','不を見落とし、反対の意味になっている。'],['その人は私の名前を知らない。','主語がちがう。知らないのは「我」（私）。'],['私はその名前を知ることができない。','不は単なる打ち消し。「できない」（不可能）の意味は出ていない。']] }),
+Z('a02','hitei','山中無虎',['','','レ',''],{ ex:'山中虎無', pa:1, pb:0,
+  yomi:'山中に虎無し。', yaku:'山の中には虎がいない。',
+  tip:'無は「なし」。有（あり）の反対で、存在しないことを表す。レ点があるので、無は虎のあと。読む順は 山 → 中 → 虎 → 無。',
+  a:[['山中に虎有り。','無を有と取りちがえている。'],['山中に無き虎。','読む順がちがう。虎 → 無 の順で、「虎無し」。'],['山中に虎を無くす。','「無し」は「なくす」という意味ではない。']],
+  b:[['山の中の虎は強くない。','無は「存在しない」の意味。強さの話ではない。'],['山の中には虎がいる。','無を読み落とし、反対の意味になっている。'],['山の中には虎ばかりいる。','「ばかり」の意味はない。']] }),
+Z('a03','nijuu','人莫不愛其子',['','レ','レ','二','','一'],{ ex:'人其子愛不莫', pa:2, pb:1,
+  yomi:'人、其の子を愛せざるは莫し。', yaku:'自分の子をかわいがらない人はいない。',
+  tip:'「莫不」は二重否定。「〜ざるは莫し」と読み、「〜しない者はいない」＝みんな〜する、という強い肯定になる。読む順は 人 → 其 → 子 → 愛 → 不 → 莫。',
+  a:[['人、其の子を愛するは莫し。','不を読み落としている。「愛せざる」と読む必要がある。'],['人、其の子を愛せざる。','莫を読み落としている。二つの打ち消しを両方読む。'],['人、其の子を愛せざるは有り。','莫は「莫し」。「有り」とは読まない。']],
+  b:[['自分の子をかわいがる人はいない。','否定が一つだけになっている。「莫」と「不」の二つが重なって肯定になる。'],['自分の子をかわいがらない人もいる。','「莫し」を読みちがえている。ここは「いない」。'],['自分の子をかわいがってはならない。','禁止の意味ではない。']] }),
+Z('a04','nijuu','不可不学',['レ','レ','レ',''],{ ex:'学不可不', pa:3, pb:0,
+  yomi:'学ばざるべからず。', yaku:'学ばなければならない。',
+  tip:'「不可不」は「〜ざるべからず」。「〜しなければならない」という意味の二重否定。レ点が三つ続くので、下から一字ずつ上にもどる。読む順は 学 → 不 → 可 → 不。',
+  a:[['学ぶべし。','二つの不を読み落としている。'],['学ぶべからず。','最初の不を読んでいない。「ざる」が抜けている。'],['学ばざるべし。','最後の不を読んでいない。「べからず」で終わる。']],
+  b:[['学んではいけない。','不が一つだけの「学ぶべからず」の意味。不が二つあると、禁止にならない。'],['学ぶことができる。','二つの不を読み落としている。'],['学ばなくてもよい。','「不可不」は「〜しなくてよい」ではなく、「〜しなければならない」。']] }),
+Z('a05','bubun','雨不常降',['','二','','一'],{ ex:'雨常降不', pa:2, pb:3,
+  yomi:'雨、常には降らず。', yaku:'雨がいつも降るとは限らない。',
+  tip:'「不常〜」（不が副詞の前）は部分否定で、「常には〜ず」「いつも〜とは限らない」。反対に「常不〜」（副詞が不の前）は全部否定で、「いつも〜ない」。読む順は 雨 → 常 → 降 → 不。',
+  a:[['雨、常に降らず。','「常に降らず」は「いつも降らない」という全部否定の読み方。不が常の前にあるときは「常には」。'],['雨、降らずして常なり。','読む順がちがう。常・降 → 不 の順。'],['雨、常に降る。','不を読み落としている。']],
+  b:[['雨はいつも降らない。','全部否定の意味。不が常の前にあると、「いつも〜とは限らない」。'],['雨はいつも降る。','不を読み落とし、反対の意味になっている。'],['雨は降らないことが多い。','「多い」の意味はない。「いつもとは限らない」だけを表す。']] }),
+Z('a06','bubun','大国不必強',['','','二','','一'],{ ex:'大国必強不', pa:1, pb:2,
+  yomi:'大国、必ずしも強からず。', yaku:'大きな国が必ずしも強いとは限らない。',
+  tip:'「不必〜」は部分否定。「必ずしも〜ず」＝「〜とは限らない」。「必不〜」なら「必ず〜ず」（全部否定）になる。読む順は 大 → 国 → 必 → 強 → 不。',
+  a:[['大国、必ず強からず。','「必ず強くない」は全部否定の読み方。不が必の前にあるので「必ずしも」。'],['大国、必ずしも強し。','不を読み落としている。'],['大国、強からずして必ず。','読む順がちがう。必・強 → 不 の順。']],
+  b:[['大きな国は必ず弱い。','「弱い」とは言っていない。「強いとは限らない」だけ。'],['大きな国は必ず強い。','不を読み落とし、反対の意味になっている。'],['大きな国は決して強くない。','全部否定になっている。部分否定は「そうとは限らない」。']] }),
+Z('a07','kinshi','勿言他人過',['レ','二','','','一'],{ ex:'他人過言勿', pa:1, pb:3,
+  yomi:'他人の過ちを言ふ勿かれ。', yaku:'他人の過ちを口にしてはならない。',
+  tip:'勿・莫・無・毋は、動詞の前に付いて禁止「〜勿かれ」（〜するな）を表す。レ点なので勿は最後に読む。読む順は 他 → 人 → 過 → 言 → 勿。',
+  a:[['他人の過ちを言ふ。','勿を読み落としている。「勿かれ」で禁止になる。'],['他人の過ちを言ふ勿し。','「勿し」ではなく、「勿かれ」と読む。'],['勿く他人の過ちを言ふ。','勿を最初に読んでいる。レ点があるので、勿は最後。']],
+  b:[['他人の過ちを口にする。','勿を読み落としている。'],['他人の過ちを口にすることはできない。','禁止（〜するな）で、不可能（〜できない）ではない。'],['他人の過ちを口にしなかった。','過去の打ち消しではない。「〜するな」という命令。']] }),
+Z('a08','kinshi','不可入此門',['レ','レ','二','','一'],{ ex:'此門入可不', pa:2, pb:0,
+  yomi:'此の門に入るべからず。', yaku:'この門に入ってはいけない。',
+  tip:'「不可〜」は「〜べからず」。「〜してはならない」（禁止）を表す。文脈によっては「〜できない」（不可能）の意味にもなるので、前後で判断する。読む順は 此 → 門 → 入 → 可 → 不。',
+  a:[['此の門に入るべし。','不を読み落としている。'],['此の門に入らざるべし。','不と可の読み方がちがう。「べからず」と読む。'],['入るべからず此の門に。','読む順がちがう。此・門 → 入 の順。']],
+  b:[['この門に入ってもよい。','不を読み落とし、反対の意味になっている。'],['この門に入れる人はいない。','「不可」は禁止の意味で、「人はいない」という意味ではない。'],['この門を入らずに行く。','「入るべからず」は禁止であって、行動の説明ではない。']] }),
+];
+const P_A2 = [
+Z('a09','saiMi','我未読此書',['','レ','二','','一'],{ re:[1], ex:'我未此書読未', pa:1, pb:3,
+  yomi:'我、未だ此の書を読まず。', yaku:'私はまだこの本を読んでいない。',
+  tip:'未は再読文字。最初に「未だ」と読み、最後にもどって「〜ず」と読む。二回読むので、番号が二つ付く。読む順は 我 → 未 → 此 → 書 → 読 → 未。',
+  a:[['我、此の書を読まず。','「未だ」を読み落としている。再読文字の未は、最初にも読む。'],['我、未だ此の書を読む。','最後の「ず」（未の二度目）を読んでいない。'],['我、此の書を未だ読まず。','未は最初に「未だ」と読む。語順がちがう。']],
+  b:[['私はこの本を読んだ。','未を読み落とし、反対の意味になっている。'],['私はこの本を決して読まない。','「まだ読んでいない」で、「決して読まない」ではない。'],['私はこの本をまだ読んでいる。','「まだ読んでいる」（継続）ではなく、「まだ読んでいない」。']] }),
+Z('a10','saiMasa','雨将降',['','レ',''],{ re:[1], ex:'雨将降将', pa:3, pb:0,
+  yomi:'雨、将に降らんとす。', yaku:'今にも雨が降りそうだ。',
+  tip:'将・且は再読文字。「まさに〜んとす」（今にも〜しそうだ・これから〜しようとする）。最初に「将に」、最後に「〜んとす」。読む順は 雨 → 将 → 降 → 将。',
+  a:[['雨、将に降る。','最後の「んとす」（将の二度目）を読んでいない。'],['雨、降らんとす。','将を最初に読んでいない。「将に」が必要。'],['雨、将に降らず。','将は打ち消しの字ではない。']],
+  b:[['雨はもう降った。','過去ではなく、これから起こること。'],['雨は降らないだろう。','打ち消しの意味ではない。'],['雨が降るべきだ。','「べきだ」は当・須などの意味。将は「今にも〜しそう」。']] }),
+Z('a11','saiMasa','将登高山',['レ','二','','一'],{ re:[0], ex:'将高山登将', pa:1, pb:2,
+  yomi:'将に高山に登らんとす。', yaku:'これから高い山に登ろうとする。',
+  tip:'再読文字の将が、二点をはさんでもどってくる。高・山 → 登 と返ってから、将にもどる。読む順は 将 → 高 → 山 → 登 → 将。',
+  a:[['将に高山に登る。','最後の「んとす」を読んでいない。'],['将に登らんとす高山に。','読む順がちがう。高・山 → 登 → 将 の順。'],['高山に登らんとす。','最初の「将に」を読んでいない。']],
+  b:[['高い山に登った。','過去ではなく、これからのこと。'],['高い山に登ってはならない。','禁止の意味ではない。'],['高い山に登ることができない。','不可能の意味ではない。']] }),
+Z('a12','saiTou','汝当学',['','レ',''],{ re:[1], ex:'汝当学当', pa:0, pb:1,
+  yomi:'汝、当に学ぶべし。', yaku:'あなたは学ばなければならない。',
+  tip:'当・応は再読文字。「当に〜べし」（当然〜すべきだ）。最初に「当に」、最後に「べし」。読む順は 汝 → 当 → 学 → 当。',
+  a:[['汝、当に学ぶ。','二度目の「べし」を読んでいない。'],['汝、学ばんとす。','「んとす」は将の読み。当は「べし」。'],['汝、当に学ばざるべし。','不がないのに、打ち消しにしている。']],
+  b:[['あなたは学ぼうとしている。','それは将の意味。当は「当然〜すべき」。'],['あなたは学んだ。','過去ではなく、これからすべきこと。'],['あなたは学んではならない。','禁止ではない。当は「〜すべきだ」。']] }),
+Z('a13','saiTou','此池応有魚',['','','レ','二','一'],{ re:[2], ex:'此池応魚有応', pa:2, pb:3,
+  yomi:'此の池、応に魚有るべし。', yaku:'この池にはきっと魚がいるだろう。',
+  tip:'応は推量（「きっと〜だろう」）の再読文字。当は当然（「〜すべきだ」）。どちらも「べし」と読むので、意味は前後で判断する。読む順は 此 → 池 → 応 → 魚 → 有 → 応。',
+  a:[['此の池、応に魚有り。','二度目の「べし」を読んでいない。'],['此の池、魚有るべし。','応を最初に読んでいない。'],['此の池、応に魚無かるべし。','有を「無し」と取りちがえている。']],
+  b:[['この池には魚がいない。','有を無と取りちがえている。'],['この池には魚がいなければならない。','それは当（当然）の意味。応は推量「きっと〜だろう」。'],['この池には魚がたくさんいた。','過去・多数の意味はない。']] }),
+Z('a14','saiSube','少年須読書',['','','レ','二','一'],{ re:[2], ex:'少年須書読須', pa:0, pb:1,
+  yomi:'少年、須らく書を読むべし。', yaku:'若者は、ぜひ本を読むべきだ。',
+  tip:'須は再読文字。「すべからく〜べし」（ぜひ〜する必要がある）。「すべて」の意味ではないので注意。読む順は 少 → 年 → 須 → 書 → 読 → 須。',
+  a:[['少年、須らく書を読む。','二度目の「べし」を読んでいない。'],['少年、すべて書を読むべし。','「須らく」は「すべて」ではない。再読文字で「すべからく〜べし」。'],['少年、書を読むべし。','最初の「須らく」を読み落としている。']],
+  b:[['若者は、すべての本を読むべきだ。','「須」を「すべて」と取りちがえている。'],['若者は、本を読んだ。','過去ではなく、すべきこと。'],['若者は、本を読んではならない。','禁止ではない。']] }),
+Z('a15','saiSube','君宜帰',['','レ',''],{ re:[1], ex:'君宜帰宜', pa:3, pb:2,
+  yomi:'君、宜しく帰るべし。', yaku:'あなたは帰るのがよい。',
+  tip:'宜は再読文字。「よろしく〜べし」（〜するのがよい・〜するのが適当だ）。須が「必要」なのに対して、宜は「ふさわしさ」。読む順は 君 → 宜 → 帰 → 宜。',
+  a:[['君、帰るべし。','最初の「宜しく」を読み落としている。'],['君、宜しく帰る。','二度目の「べし」を読んでいない。'],['君、宜しく帰らざるべし。','不がないのに、打ち消しにしている。']],
+  b:[['あなたは帰らなくてもよい。','打ち消しの意味ではない。'],['あなたは帰ってきた。','過去ではなく、勧め。'],['あなたは帰ってはならない。','禁止ではなく、「〜するのがよい」という勧め。']] }),
+Z('a16','saiNao','過猶不及',['','レ','レ',''],{ re:[1], ex:'過猶及不猶', pa:1, pb:0,
+  yomi:'過ぎたるは猶ほ及ばざるがごとし。', yaku:'やりすぎは、足りないのと同じようなものだ。',
+  tip:'猶・由は再読文字。「なほ〜がごとし」（ちょうど〜のようだ）。最初に「猶ほ」、最後に「ごとし」。この句は、論語の言葉として知られる。読む順は 過 → 猶 → 及 → 不 → 猶。',
+  a:[['過ぎたるは及ばず。','猶を読み落としている。'],['過ぎたるは猶ほ及ばず。','最後の「ごとし」（猶の二度目）を読んでいない。'],['過ぎたるは猶ほ及ぶがごとし。','不を読み落としている。「及ばざる」とする。']],
+  b:[['やりすぎは、足りないよりよい。','「猶〜ごとし」は「同じようなもの」。優劣をつける形ではない。'],['やりすぎは、足りないよりひどい。','「ごとし」は比べて優劣をつけるのではなく、同じだと言う。'],['やりすぎると、最後に及ぶ。','「及」を「届く」と取り、不を読み落としている。']] }),
+Z('a17','saiNanzo','汝盍帰',['','レ',''],{ re:[1], ex:'汝盍帰盍', pa:2, pb:1,
+  yomi:'汝、盍ぞ帰らざる。', yaku:'あなたはどうして帰らないのか（帰ったらどうか）。',
+  tip:'盍は何不（なんぞ〜ざる）の意味の再読文字。「どうして〜しないのか」と、「〜したらどうか」とすすめる意味になる。読む順は 汝 → 盍 → 帰 → 盍。',
+  a:[['汝、盍ぞ帰る。','二度目の「ざる」を読んでいない。'],['汝、帰らざる。','最初の「盍ぞ」を読み落としている。'],['汝、盍に帰らず。','盍は「なんぞ〜ざる」。「ず」ではなく、疑問の形で終わる。']],
+  b:[['あなたは決して帰らない。','打ち消しだけで、疑問・すすめの意味が出ていない。'],['あなたはなぜ帰ったのか。','過去ではなく、「帰らないのか」と言っている。'],['あなたは帰ってはならない。','禁止ではない。']] }),
+];
+const LESSONS_B = {
+  ikan:    { group: '反語', name: '如何・奈何', kata: '奈（如・若）A 何　／　奈何', yomi: 'Aを奈何せん　／　奈何', point: '「どうしようか」と方法をたずねる。「Aを奈何せん」の形では、Aを間にはさんで読む。' },
+  eitan:   { group: '詠嘆', name: '詠嘆', kata: '〜哉　／　不亦〜乎', yomi: '〜かな　／　亦た〜ずや', point: '「なんと〜だなあ」と感動を表す。「不亦〜乎」は反語の形だが、意味は強い肯定。' },
+  sentaku: { group: '選択', name: '選択', kata: '寧 A 不 B　／　与其 A 寧 B', yomi: '寧ろAとも、Bせず　／　Aよりは寧ろB', point: '二つのうち、どちらかを選ぶ形。「寧」のついた方（A、または与其のB）を選ぶ。' }
+};
+const P_B = [
+Z('b01','gimon','君欲何往',['','二','','一'],{ ex:'君何往欲', pa:1, pb:0,
+  yomi:'君、何くにか往かんと欲する。', yaku:'あなたはどこへ行こうとするのか。',
+  tip:'疑問の字（何・誰・安・孰）は、述語の前に出る。「欲」（〜しようとする）は、何・往を読んでから、最後にもどって読む。読む順は 君 → 何 → 往 → 欲。',
+  a:[['君、往かんと欲す何くにか。','読む順がちがう。何 → 往 → 欲 の順。'],['君、何くにか往く。','欲を読み落としている。'],['君、何をか往かんと欲する。','この何は「どこ」の意味。「何を」と読むと、目的語になってしまう。']],
+  b:[['あなたは何をしようとするのか。','何を「なに」と取りちがえ、場所をたずねる意味が消えている。'],['あなたはどこへも行きたくない。','打ち消しの字はない。'],['あなたはどこかへ行ってしまった。','過去ではなく、これからのことをたずねている。']] }),
+Z('b02','gimon','孰為良臣',['','二','','一'],{ ex:'孰良臣為', pa:3, pb:2,
+  yomi:'孰か良臣為る。', yaku:'だれが良い家臣なのか。',
+  tip:'孰は「たれ・いづれ」。「だれが」「どちらが」とたずねる字で、文の最初に出る。為は「〜である」の意味でも使い、「為る」と読む。読む順は 孰 → 良 → 臣 → 為。',
+  a:[['孰か良臣を為す。','「為す」だと「〜をする」。ここは「〜である」の「為る」。'],['良臣為る孰か。','読む順がちがう。孰は先に読む。'],['孰ぞ良臣為らざる。','不がないのに、打ち消しにしている。']],
+  b:[['良い家臣はだれもいない。','打ち消しの字はない。疑問の文。'],['だれが良い家臣を作るのか。','為を「作る」に取りちがえている。'],['どれほど良い家臣なのか。','孰は「だれ」。程度をたずねる字ではない。']] }),
+Z('b03','hango','安知其心',['','二','','一'],{ ex:'安其心知', pa:0, pb:1,
+  yomi:'安くんぞ其の心を知らんや。', yaku:'どうしてその人の心を知ることができようか。（いや、できない）',
+  tip:'「安」は「いづくんぞ」と読み、「〜んや」で結ぶ反語。「どうして〜か、いや〜ない」。たずねる形で、強く打ち消す。読む順は 安 → 其 → 心 → 知。',
+  a:[['安くんぞ其の心を知る。','文末の「んや」がなく、反語の形になっていない。'],['其の心を安くんぞ知らんや。','安くんぞは最初に読む。語順がちがう。'],['安くにか其の心を知る。','「安くにか」は場所をたずねる読み方。ここは反語の「安くんぞ〜んや」。']],
+  b:[['その人の心はどこにあるのか。','場所をたずねる意味に取りちがえている。'],['その人の心を知っている。','反語を、ふつうの肯定文に取りちがえている。'],['その人の心を知るはずがない。いや、知っている。','反語の答えが逆。反語は強い打ち消しで、「いや、できない」と続く。']] }),
+Z('b04','hango','何必言利',['','','二','一'],{ ex:'何必利言', pa:2, pb:0,
+  yomi:'何ぞ必ずしも利を言はん。', yaku:'どうして必ず利益のことを言う必要があろうか。',
+  tip:'「何必〜」は「何ぞ必ずしも〜ん」。「どうして必ず〜する必要があろうか（いや、ない）」。「何ぞ〜ん（や）」が反語のサイン。読む順は 何 → 必 → 利 → 言。',
+  a:[['何ぞ必ずしも利を言ふ。','文末が「ん」になっていない。反語は「〜ん（や）」で結ぶ。'],['利を言ふを何ぞ必ずしもせん。','読む順がちがう。何 → 必 → 利 → 言 の順。'],['何ぞ必ずしも利を言はざらん。','不がないのに、打ち消しを読んでいる。']],
+  b:[['必ず利益のことを言うべきだ。','反語を、強い肯定に取りちがえている。'],['どうして利益のことを言ってはならないのか。','禁止の意味ではない。'],['何が利益なのかを言いなさい。','何を「なに」とたずねる意味に取っている。ここは反語。']] }),
+Z('b05','ikan','吾奈此何',['','レ','',''],{ ex:'吾此奈何', pa:3, pb:1,
+  yomi:'吾、此を奈何せん。', yaku:'私はこれをどうしたらよいだろうか。',
+  tip:'奈何（いかん）・如何・若何は、方法を「どうしようか」とたずねる。「奈（如）A何」の形では、Aを間にはさんで「Aを奈何せん」と読む。読む順は 吾 → 此 → 奈 → 何。',
+  a:[['吾、奈何ぞ此を何せん。','「奈何」は二字で一つのことば。分けて読まない。'],['吾、此を奈何す。','「奈何せん」と、「ん」で結ぶのがふつう。'],['吾、奈此を何せん。','読む順がちがう。此 → 奈 → 何 の順。']],
+  b:[['私はこれは何だろうか。','奈何はやり方をたずねる。「何」をたずねるのではない。'],['私はこれを大切にしたい。','奈何は方法をたずねる言葉で、願望の意味はない。'],['私はこれをなぜ知っているのか。','理由をたずねる「何為」の意味ではない。']] }),
+Z('b06','eitan','不亦楽乎',['二','','一',''],{ ex:'亦楽不乎', pa:0, pb:3,
+  yomi:'亦た楽しからずや。', yaku:'なんと楽しいことではないか。',
+  tip:'「不亦〜乎」は「亦た〜ずや」。「なんと〜ではないか」という詠嘆（感動）。反語の形だが、意味は強い肯定。読む順は 亦 → 楽 → 不 → 乎。',
+  a:[['亦た楽しからず。','文末の「や」がない。「〜ずや」で詠嘆になる。'],['楽しからずや亦た。','読む順がちがう。亦 → 楽 → 不 → 乎 の順。'],['亦た楽しむや。','不を読み落としている。']],
+  b:[['楽しくない。','「ではないか」と問う形は、実は強い肯定。打ち消しではない。'],['また楽しいのだろうか。','答えを求める疑問ではなく、感動を表す文。'],['楽しんではならない。','禁止ではない。']] }),
+Z('b07','eitan','美哉山川',['','','',''],{ ex:'美哉山川', pa:2, pb:1,
+  yomi:'美なるかな、山川。', yaku:'なんと美しいことよ、山や川は。',
+  tip:'「〜哉」は詠嘆（なんと〜だなあ）。「〜かな」と読む。述語（美）が先に来て、主語（山川）があとに来る倒置の形になる。読む順は そのまま 美 → 哉 → 山 → 川。',
+  a:[['山川は美なり。','倒置（述語を先にした形）の詠嘆を、ふつうの文にしている。'],['美なるや、山川。','哉は詠嘆では「かな」と読む。'],['美なるかな、山川を。','山川は目的語ではないので、「を」は付けない。']],
+  b:[['山や川は美しいだろうか。','疑問の「か」と取りちがえている。ここは詠嘆。'],['山や川は美しくない。','打ち消しの字はない。'],['山や川を美しくしよう。','願望の字はない。']] }),
+Z('b08','ukemi','為人所欺',['二','','一レ',''],{ ex:'人欺所為', pa:1, pb:0,
+  yomi:'人の欺く所と為る。', yaku:'人にだまされる。',
+  tip:'「為A所V」は受身。「AのVする所と為る」＝「AにVされる」。為はいちばん最後に「と為る」と読む。所には一レ点が付く。読む順は 人 → 欺 → 所 → 為。',
+  a:[['人を欺く所と為る。','「人の」と読む。人は、だます側で、「人に〜される」の意味。'],['人の欺く所と為す。','「為す」は「〜とする」。受身は「為る」。'],['人欺きて為る。','「所」を読み落としている。「Aの Vする所と為る」の形。']],
+  b:[['人をだます。','能動と受身を取りちがえている。'],['人にだまされない。','打ち消しの字はない。'],['人がだます所を見る。','「所」を「場所」に取りちがえている。']] }),
+Z('b09','ukemi','弟被叱',['','レ',''],{ ex:'弟叱被', pa:0, pb:2,
+  yomi:'弟、叱らる。', yaku:'弟はしかられた。',
+  tip:'被・見・為などは受身の字。「被V」で「Vらる」（〜される）。レ点があるので、被は叱のあとに読む。読む順は 弟 → 叱 → 被。',
+  a:[['弟、叱る。','被は受身の字。「叱らる」と読む。'],['弟、叱るを被る。','「被る」と読むと、受身の形にならない。'],['弟、被りて叱る。','被を先に読んでいる。レ点があるので、被は叱のあと。']],
+  b:[['弟がしかった。','受身を、する側に取りちがえている。'],['弟はしかられなかった。','打ち消しの字はない。'],['弟をしかる。','被（受身）を読み落としている。']] }),
+Z('b10','shieki','君命臣行',['','レ','',''],{ ex:'君臣命行', pa:2, pb:1,
+  yomi:'君、臣に命じて行かしむ。', yaku:'君主は臣下に命じて行かせた。',
+  tip:'命も使役の字。「AにVを命じてVせしむ」。使・令・教・遣は「AをしてVせしむ」だが、命は「Aに命じてVせしむ」と読む。読む順は 君 → 臣 → 命 → 行。',
+  a:[['君、臣を命じて行く。','「臣に」。使役の形にするため、最後は「行かしむ」。'],['君、臣に命じて行く。','最後の「しむ」（使役）が抜けている。'],['君、命じて臣行く。','レ点があるので、臣のあとに命を読む。']],
+  b:[['君主は臣下に命じられて行った。','受身に取りちがえている。命じたのは君主。'],['君主は臣下に従って行った。','命じる側と受ける側が逆になっている。'],['君主は臣下に行くなと命じた。','禁止の字（勿・莫）はない。']] }),
+Z('b11','sentaku','寧飢不盗',['','','レ',''],{ ex:'寧飢盗不', pa:1, pb:3,
+  yomi:'寧ろ飢うとも盗まず。', yaku:'たとえ飢えても盗みはしない。',
+  tip:'「寧A不B」は、二つのうち、Aのほうを選ぶ形。「寧ろAとも、Bせず」＝Bをするくらいなら、Aのほうがよい。読む順は 寧 → 飢 → 盗 → 不。',
+  a:[['寧ろ飢うとも盗む。','不を読み落としている。'],['寧ろ盗まず飢う。','読む順がちがう。寧 → 飢 → 盗 → 不 の順。'],['寧ろ飢ゑず盗む。','飢と盗の打ち消しの位置が逆になっている。']],
+  b:[['飢えるくらいなら盗む。','選ぶ方が逆。「寧A不B」はAを選び、Bをしない。'],['飢えることも盗むこともない。','選択の意味が消えている。'],['盗むより飢えるほうがひどい。','優劣をいう文ではなく、Aを選ぶ文。']] }),
+Z('b12','sentaku','与其奢寧倹',['二','','一','',''],{ ex:'其奢与寧倹', pa:2, pb:0,
+  yomi:'其の奢らんよりは寧ろ倹なれ。', yaku:'ぜいたくをするより、むしろ質素にしなさい。',
+  tip:'「与其A寧B」は、「AよりはむしろB」と二つを比べて、Bを選ぶ形。与は「よりは」と、あとからもどって読む。読む順は 其 → 奢 → 与 → 寧 → 倹。',
+  a:[['奢らんよりは寧ろ倹なれ。','其を読み落としている。'],['其の奢らんよりは倹なれ。','「寧ろ」を読み落としている。'],['其の奢らんと寧ろ倹なれ。','与を「と」と読んでいる。ここは「よりは」。']],
+  b:[['質素にするより、むしろぜいたくをしなさい。','AとBが逆。選ぶのはB（質素）。'],['ぜいたくと質素の両方をしなさい。','選択の意味が消えている。'],['ぜいたくをしないのは質素ではない。','打ち消しの字はない。']] }),
+];
+const LESSONS_C = {
+  katei:   { group: '仮定', name: '仮定', kata: '若（如・苟）A、B　／　縦（仮令）A、B', yomi: '若しAらば、B　／　縦ひAとも、B', point: '「もし〜ならば」は未然形＋ば。「たとえ〜ても」は縦などで、逆接の仮定。' },
+  gentei:  { group: '限定', name: '限定', kata: '唯（只・但・独）A　／　A 耳（而已）', yomi: '唯だAのみ　／　Aのみ', point: '「ただ〜だけだ」。唯などは最初に「ただ」と読み、文末は「のみ」でしめる。' },
+  yokuyou: { group: '抑揚', name: '抑揚', kata: 'A 尚（猶）B、況 C 乎', yomi: 'Aすら尚ほB、況んやCをや', point: '軽いことを先に言い、「ましてCはなおさらだ」と重いことを強める。「乎」は「や」と読む。' },
+  ruika:   { group: '累加', name: '累加', kata: '非（不）唯 A、亦 B', yomi: '唯だにAのみに非ず、亦たB', point: '「AだけでなくBも」。Aを軽く認めて、Bを付け加える。' },
+  ganbou:  { group: '願望', name: '願望', kata: '願（請）V', yomi: '願はくはVせん　／　請ふVせん', point: '「ぜひ〜したい」「どうか〜させてください」。文末は意志の「ん」でしめる。' },
+  kanou:   { group: '可能', name: '可能', kata: '不能 V　／　得 V　／　足 V', yomi: 'Vすること能はず　／　Vするを得　／　Vするに足る', point: '能・得は「〜できる」。足は「〜するに十分だ・値する」。不が付くと「できない」。' },
+  higyou:  { group: '比況', name: '比況', kata: 'A 如（若・猶）B', yomi: 'AはBのごとし', point: '「AはBのようだ」とたとえる。同じ「如」でも、「不如」は「しかず」で比較の形。' }
+};
+const P_C = [
+Z('c01','katei','若有過速改',['','レ','','',''],{ ex:'若過有速改', pa:2, pb:3,
+  yomi:'若し過ち有らば、速やかに改めよ。', yaku:'もし過ちがあれば、すぐに改めなさい。',
+  tip:'若・如・苟・使などは、仮定（もし〜ならば）を表す。「未然形＋ば」で読み、あとに命令や推量が続く。読む順は 若 → 過 → 有 → 速 → 改。',
+  a:[['若し過ち有り、速やかに改む。','仮定は「有らば」（未然形＋ば）で表す。'],['過ち若し有らば、速やかに改めよ。','若は最初に読む。語順がちがう。'],['若し有らば過ち、速やかに改めよ。','読む順がちがう。過 → 有 の順。']],
+  b:[['過ちがあったので、すぐに改めた。','仮定（もし〜ならば）を、過去の事実に取りちがえている。'],['過ちがあっても、改めなくてよい。','「改めよ」は命令。改めなくてよい、の意味ではない。'],['過ちがなければ、すぐに改めなさい。','有を「無」と取りちがえている。']] }),
+Z('c02','katei','苟不励無成',['','レ','','レ',''],{ ex:'苟励不成無', pa:0, pb:2,
+  yomi:'苟くも励まずんば、成る無し。', yaku:'もしも努力しなければ、成し遂げることはない。',
+  tip:'苟（いやしくも）は「もしも」の意味の仮定。「〜ずんば」は「〜ずは」の古い言い方で、「〜しなければ」。読む順は 苟 → 励 → 不 → 成 → 無。',
+  a:[['苟くも励まば、成る無し。','不を読み落としている。「励まずんば」と読む。'],['苟くも励まずんば、成る有り。','無を有と取りちがえている。'],['励まずんば苟くも、成る無し。','苟は最初に読む。語順がちがう。']],
+  b:[['もしも努力すれば、成し遂げることはない。','不を読み落としている。'],['努力しなかったので、成し遂げられなかった。','仮定ではなく、過去の事実に取りちがえている。'],['もしも努力しなければ、必ず成し遂げる。','無を読みちがえている。']] }),
+Z('c03','katei','縦死不降',['','','レ',''],{ ex:'縦死降不', pa:1, pb:3,
+  yomi:'縦ひ死すとも降らず。', yaku:'たとえ死んでも降伏しない。',
+  tip:'縦・仮令は「たとえ〜ても」。仮定の逆接で、「縦ひAとも、B」の形。読む順は 縦 → 死 → 降 → 不。',
+  a:[['縦ひ死すれば降らず。','「〜とも」は逆接。「死すれば」では順接になる。'],['縦ひ死すとも降る。','不を読み落としている。'],['降らずんば縦ひ死す。','読む順がちがう。縦 → 死 → 降 → 不 の順。']],
+  b:[['死んだら降伏する。','逆接の「たとえ〜ても」が、順接になっている。'],['降伏したので死ななかった。','仮定ではなく、過去の事実に取りちがえている。'],['死ぬことも降伏することもできない。','不可能の意味ではない。']] }),
+Z('c04','gentei','唯有梅花',['','二','','一'],{ ex:'唯梅花有', pa:3, pb:0,
+  yomi:'唯だ梅花有るのみ。', yaku:'ただ梅の花があるだけだ。',
+  tip:'唯・只・但・独・僅は「ただ〜のみ」と限定を表す。文末は「のみ」でしめる。読む順は 唯 → 梅 → 花 → 有。',
+  a:[['唯だ梅花有り。','「のみ」がない。限定は文末の「のみ」でしめる。'],['梅花有るのみ唯だ。','唯だは最初に読む。語順がちがう。'],['唯だ梅花無きのみ。','有を無と取りちがえている。']],
+  b:[['梅の花もある。','限定（だけ）が、累加（も）になっている。'],['梅の花だけがない。','有を無と取りちがえている。'],['梅の花があってはならない。','禁止の意味ではない。']] }),
+Z('c05','gentei','吾有一子耳',['','二','','一',''],{ ex:'吾一子有耳', pa:1, pb:2,
+  yomi:'吾に一子有るのみ。', yaku:'私にはただ一人の子がいるだけだ。',
+  tip:'文末の「耳・而已・爾」は「のみ」と読む限定の字。「〜だけだ」。唯などの限定の字と一緒に使うこともある。読む順は 吾 → 一 → 子 → 有 → 耳。',
+  a:[['吾に一子有り。','耳は文末で「のみ」と読む限定の字。読み落としている。'],['吾に一子有るや。','耳を「や」と読んでいる。ここは「のみ」。'],['吾に一子無きのみ。','有を無と取りちがえている。']],
+  b:[['私には一人も子がいない。','有を無と取りちがえている。'],['私に一人の子がいるのだろうか。','耳を疑問の「や」と取りちがえている。'],['私には子が一人しかいてはならない。','禁止の意味ではない。']] }),
+Z('c06','yokuyou','犬尚知恩況人乎',['','','二','一','','',''],{ ex:'犬尚恩知況人乎', pa:2, pb:1,
+  yomi:'犬すら尚ほ恩を知る、況んや人をや。', yaku:'犬でさえなお恩を知っている。ましてや人はなおさらだ。',
+  tip:'抑揚の形。まず軽いこと（犬）を挙げ、「況んやBをや」で重いこと（人）を強める。「Aですら〜だ。ましてBはなおさらだ」。尚は「なほ」と読む副詞。読む順は 犬 → 尚 → 恩 → 知 → 況 → 人 → 乎。',
+  a:[['犬すら尚ほ恩を知らず、況んや人をや。','不がないのに、打ち消しを読んでいる。'],['犬すら尚ほ恩を知る、人は恩を知らず。','「況んや〜をや」の抑揚の形を読んでいない。'],['犬すら尚ほ恩を知る、況んや人をか。','「乎」を「か」と読んでいる。「況んや〜をや」と読む。']],
+  b:[['犬は恩を知らないが、人は知っている。','対比ではなく、抑揚。犬も恩を知っている。'],['犬でさえ恩を知らないのだから、人は知らない。','打ち消しの字はない。'],['人は犬よりも恩を知らない。','比較ではなく、抑揚（AでさえBなら、ましてCは）。']] }),
+Z('c07','yokuyou','秋尚冷況冬乎',['','','','','',''],{ ex:'秋尚冷況冬乎', pa:3, pb:0,
+  yomi:'秋すら尚ほ冷たし、況んや冬をや。', yaku:'秋でさえなお寒い。ましてや冬はなおさらだ。',
+  tip:'「況A乎」は「況んやAをや」。「ましてAはなおさらだ」。直前の文（秋すら尚ほ冷たし）を受けて、Aをいっそう強める。返り点がなく、上から順に読む文でもある。',
+  a:[['秋すら尚ほ冷たし、況んや冬は。','文末は「況んや〜をや」と結ぶ。'],['秋すら尚ほ冷たからず、況んや冬をや。','不がないのに、打ち消しにしている。'],['秋は冷たし、冬は尚ほ冷たし。','「すら」「況んや」の抑揚の形を読んでいない。']],
+  b:[['秋は寒くないが、冬は寒い。','対比ではなく、抑揚。秋も寒いと言っている。'],['冬は秋ほど寒くない。','比較の意味ではない。'],['秋も冬も、寒さは同じだ。','「ましてや」は、冬のほうがもっと寒い、という意味。']] }),
+Z('c08','ruika','非唯善歌亦善舞',['二','','一レ','','','レ',''],{ ex:'唯歌善非亦舞善', pa:0, pb:3,
+  yomi:'唯だに歌を善くするのみに非ず、亦た舞を善くす。', yaku:'歌が上手なだけでなく、舞も上手である。',
+  tip:'「非唯A、亦B」は累加。「唯だにAのみに非ず、亦たBす」＝「AだけでなくBも」。「不但A亦B」なども同じ形。読む順は 唯 → 歌 → 善 → 非 → 亦 → 舞 → 善。',
+  a:[['唯だに歌を善くす、亦た舞を善くす。','「のみに非ず」がない。累加は「Aのみに非ず、Bも」の形。'],['歌を善くするのみに非ず、舞を善くす。','唯だ・亦たを読み落としている。'],['唯だ歌を善くするのみ、舞を善くせず。','「のみに非ず」を読んでいない。限定（のみ）になってしまっている。']],
+  b:[['歌だけが上手で、舞は下手だ。','累加を、限定にしてしまっている。'],['歌も舞も上手ではない。','非を、歌と舞の両方への打ち消しにしている。'],['歌が上手でないのに、舞は上手だ。','「Aだけでなく」の意味が出ていない。']] }),
+Z('c09','ganbou','願聞其言',['','二','','一'],{ ex:'願其言聞', pa:1, pb:0,
+  yomi:'願はくは其の言を聞かん。', yaku:'ぜひその言葉をうかがいたい。',
+  tip:'願・請・庶幾・冀は願望を表す。「願はくは〜ん」「請ふ〜ん」。文末は、意志や推量の「ん」でしめる。読む順は 願 → 其 → 言 → 聞。',
+  a:[['其の言を聞かんと願ふ。','願は最初に読む。語順がちがう。'],['願はくは其の言を聞く。','文末は意志の「ん」で結ぶ。「聞かん」。'],['願はくは其の言を聞かず。','不がないのに、打ち消しにしている。']],
+  b:[['その言葉をうかがいたくない。','願望が、否定になっている。'],['その言葉を聞かせてやろう。','願は自分が望む言葉。「〜してやろう」ではない。'],['その言葉を聞いた。','過去ではなく、これからの希望。']] }),
+Z('c10','ganbou','請試之',['','二','一'],{ ex:'請之試', pa:2, pb:1,
+  yomi:'請ふ之を試みん。', yaku:'どうかこれを試させてください。',
+  tip:'請は「請ふ」と読み、「どうか〜させてください」とへりくだって願う。願と同じく、文末は「ん」でしめる。読む順は 請 → 之 → 試。',
+  a:[['請ふ之を試みず。','不がないのに、打ち消しにしている。'],['之を請ひて試みん。','請は最初に読む。語順がちがう。'],['請ふ之を試む。','文末は意志の「ん」で結ぶ。「試みん」。']],
+  b:[['どうかこれを試さないでください。','打ち消しの字はない。'],['これを試すように頼まれた。','請を「頼まれる」と取りちがえている。'],['これを試したことがある。','経験の意味はない。']] }),
+Z('c11','kanou','吾不能行',['','レ','レ',''],{ ex:'吾行能不', pa:1, pb:3,
+  yomi:'吾、行くこと能はず。', yaku:'私は行くことができない。',
+  tip:'能は「〜することができる」。「不能V」は「Vすること能はず」＝「Vできない」。レ点が二つ続くので、行 → 能 → 不 の順にもどる。読む順は 吾 → 行 → 能 → 不。',
+  a:[['吾、行くこと能ふ。','不を読み落としている。'],['吾、行かざること能ふ。','不と能の関係がちがう。「能はず」と読む。'],['吾、能く行かず。','「能はず」ではなく「能く〜ず」と読むと、不可能の意味にならない。']],
+  b:[['私は行くことができる。','不を読み落とし、反対の意味になっている。'],['私は行ってはいけない。','禁止ではなく、不可能。'],['私は行こうとしない。','意志ではなく、能力・条件の不可能。']] }),
+Z('c12','kanou','民得安居',['','二','','一'],{ ex:'民安居得', pa:2, pb:1,
+  yomi:'民、安んじて居るを得。', yaku:'民は安心して暮らすことができる。',
+  tip:'得は動詞の前に置いて「Vするを得」。「Vできる」（可能）。不得なら「Vするを得ず」（Vできない）。得は最後にもどって読む。読む順は 民 → 安 → 居 → 得。',
+  a:[['民、得て安んじて居る。','得は最後。二点があるので、居 → 得 の順。'],['民、安んじて居るを得ず。','不がないのに、打ち消しにしている。'],['民、安んじて居る。','得を読み落としている。可能の意味が消えている。']],
+  b:[['民は安心して暮らすことができない。','不がないのに、打ち消しにしている。'],['民は安心して暮らさなければならない。','当・須などの意味。得は可能。'],['民は暮らしを手に入れるために安心した。','得を「手に入れる」の意味だけで取り、可能の用法を読み落としている。']] }),
+Z('c13','kanou','此言足信',['','','レ',''],{ ex:'此言信足', pa:3, pb:2,
+  yomi:'此の言、信ずるに足る。', yaku:'この言葉は信じるだけの価値がある。',
+  tip:'足は「〜するに足る」＝「〜する価値がある」「〜するのに十分だ」。可能の表現の一つ。読む順は 此 → 言 → 信 → 足。',
+  a:[['此の言、信ずるを足す。','「足す」と読むと意味が変わる。足は「足る」。'],['此の言、足りて信ず。','足を先に読んでいる。レ点があるので、足は信のあと。'],['此の言、信ずるに足らず。','不がないのに、打ち消しにしている。']],
+  b:[['この言葉は信じなくてもよい。','「足る」を、不要の意味に取りちがえている。'],['この言葉は信じるに足りない。','不がないのに、打ち消しにしている。'],['この言葉は信じるのに十分な量がある。','「足る」は量ではなく、「値する」の意味。']] }),
+Z('c14','higyou','光陰如矢',['','','レ',''],{ ex:'光陰矢如', pa:0, pb:2,
+  yomi:'光陰は矢のごとし。', yaku:'月日の過ぎるのは、矢のように速い。',
+  tip:'如・若・猶は「〜のごとし」（〜のようだ）。「A如B」＝「AはBのごとし」。「不如」（しかず）とは別の形。光陰は月日のこと。読む順は 光 → 陰 → 矢 → 如。',
+  a:[['光陰は矢に如く。','比況では「ごとし」。「如く」は「及ぶ」の意味。'],['矢は光陰のごとし。','AとBが逆になっている。'],['光陰は矢のごとからず。','不がないのに、打ち消しにしている。']],
+  b:[['月日の過ぎるのは、矢よりも遅い。','比較ではなく、たとえ（比況）。'],['月日の過ぎるのは、矢を放つ人のようだ。','「矢」そのものにたとえている。'],['矢の飛ぶのは、月日のように速い。','AとBが逆になっている。']] }),
+];
+
+function Q3(q, right, wrong, pos, why) { // wrong: [[文, 理由],...3つ]
+  const opts = wrong.map(function (w) { return w[0]; }), ws = wrong.map(function (w) { return w[1]; });
+  opts.splice(pos, 0, right); ws.splice(pos, 0, '');
+  return { q: q, opts: opts, ans: pos, why: ws, expl: why };
+}
+const T = [
+{ id: 't01', kind: '文章', title: '苗を助ける農夫',
+  bai: ['昔有農夫。', '憂苗之不長。', '乃就田抜苗以助其長。', '帰謂家人曰、今日疲矣。予助苗長矣。', '其子趨往視之。', '苗尽枯矣。'],
+  yomi: ['昔、農夫有り。', '苗の長ぜざるを憂ふ。', '乃ち田に就き、苗を抜きて以て其の長ずるを助く。', '帰りて家人に謂ひて曰はく、「今日疲れたり。予、苗の長ずるを助けたり」と。', '其の子趨りて往きて之を視れば、', '苗尽く枯れたり。'],
+  yaku: '昔、ある農夫がいた。苗がなかなか伸びないのを心配した。そこで田に行き、苗を引き抜いて、成長を助けようとした。帰ると家の者に言った。「今日は疲れた。私は苗が伸びるのを助けてやったよ」と。その子が走って見に行くと、苗はすべて枯れていた。',
+  notes: [['趨', '小走りで行く'], ['家人', '家の者'], ['長ず', '成長する、伸びる']],
+  tip: '「抜苗以助其長」は、早く伸ばしたい一心で苗を引き抜いた、という行動。農夫は「助けた」と思っているが、結果は逆。この話は「早く成果を出そうと無理に手を加えると、かえって台なしになる」という意味の故事（助長）として知られている。',
+  qs: [
+    Q3('「乃」の意味として、最も適当なものを選べ。', 'そこで', [['しかし', '「しかし」は逆接。逆接なら「然れども」などの字が来る。ここは苗を心配した流れを受けて行動に移る場面。'], ['もしも', '「もしも」は仮定の字（若・如）。乃は仮定を表さない。'], ['たとえ', '「たとえ」は縦・仮令など。乃にその意味はない。']], 0),
+    Q3('農夫が苗を抜いたのは、なぜか。', '苗が伸びないのを心配し、早く伸ばしたいと思ったから', [['苗が病気になっていたから', '病気の話は文中にない。「憂苗之不長」とあるので、理由は伸びないことへの心配。'], ['田を作り直したかったから', '田を作り直す話は文中にない。'], ['子に畑仕事を教えるため', '子が出てくるのは、あとで様子を見に行く場面だけ。']], 2),
+    Q3('「予助苗長矣」を言ったときの農夫の気持ちとして、最も適当なものを選べ。', '苗のために良いことをしたと思い、満足している', [['苗を抜いたことを後悔している', '後悔しているなら「今日疲れたり」とは言わない。農夫は、自分が役に立ったと思っている。'], ['家人に仕事の手伝いを頼んでいる', '手伝いを頼む内容はない。手柄を話しているだけ。'], ['苗が枯れることを予想している', '枯れたのは、子が見に行ったあとにわかること。農夫は予想していない。']], 1),
+    Q3('この文章が伝えようとしていることとして、最も適当なものを選べ。', '早く成果を求めて無理をすると、かえってすべてを台なしにする', [['苗は毎日抜いて育てるのがよい', '結果は苗が枯れている。抜くことをすすめる話ではない。'], ['農夫は子に仕事をまかせるべきだ', '仕事をまかせる話ではない。'], ['田の世話は休まずに続けるべきだ', '農夫は休まず世話をしたのではなく、余計な手出しをして失敗した。']], 3)
+  ] },
+{ id: 't02', kind: '文章', title: '弓を折った弟子',
+  bai: ['有学射者。', '三年不能中的。', '怒而折弓。', '師曰、弓豈有罪乎。', '汝心不静耳。'],
+  yomi: ['射を学ぶ者有り。', '三年にして的に中つること能はず。', '怒りて弓を折る。', '師曰はく、「弓豈に罪有らんや。', '汝の心静かならざるのみ」と。'],
+  yaku: '弓を習う者がいた。三年たっても、的に当てることができなかった。怒って弓を折った。師は言った。「弓に罪があるだろうか、いや、ない。お前の心が落ち着いていないだけだ」と。',
+  notes: [['射', '弓を射ること'], ['的', 'まと'], ['中つ', '命中する、当たる'], ['師', '先生']],
+  tip: '「不能」は「〜できない」（可能の否定）。「豈〜乎」は反語（どうして〜か、いや〜ない）。「耳」は「のみ」と読む限定の字。句形が三つも入っているので、読み方から意味を取る練習になる。師は「原因は弓でなく、お前の心だ」と言い、失敗を道具のせいにする弟子をたしなめている。',
+  qs: [
+    Q3('「不能中的」の意味として、最も適当なものを選べ。', '的に当てることができなかった', [['的に当てようとしなかった', '「しなかった」は意志の打ち消し。不能は「できない」（可能の打ち消し）。'], ['的に当ててはならなかった', '「ならなかった」は禁止。禁止は勿・莫・不可などで表す。'], ['的に当たるはずがなかった', '「はずがない」は反語や推量。不能にその意味はない。']], 1),
+    Q3('「弓豈有罪乎」の解釈として、最も適当なものを選べ。', '弓に罪があるはずがない（いや、ない）', [['弓にどんな罪があるのか、教えてほしい', '豈〜乎は、答えを求める疑問ではなく反語。「いや、ない」と強く打ち消す。'], ['弓に罪があるにちがいない', '反語は、たずねる形で強い打ち消しを表す。意味が逆になっている。'], ['弓の罪を許してやりなさい', '許すという内容は文中にない。']], 3),
+    Q3('「汝心不静耳」で、師が言いたいこととして、最も適当なものを選べ。', '的に当たらない原因は、弓ではなく、弟子の心にある', [['弓も悪いが、心も少し悪い', '耳は「〜だけだ」という限定。原因は心だけだと言っている。'], ['心が静かなら、弓はなくてもよい', '弓が不要という話ではない。'], ['弟子は心が静かだったので当たった', '「不静」とあり、静かではなかった。']], 0),
+    Q3('この文章の趣旨として、最も適当なものを選べ。', '失敗を道具のせいにせず、まず自分の未熟さを省みるべきだ', [['弓は高価なので大切に扱うべきだ', '弓の値段の話はない。'], ['怒りをおさえれば、すぐに上達する', '「すぐに」とは言っていない。心が静かでないことを指摘しているだけ。'], ['師は弟子に厳しくすべきだ', '師の態度の是非を言う文章ではない。']], 2)
+  ] },
+{ id: 't03', kind: '文章', title: '己を省みる',
+  bai: ['人之過、人易知而己難知。', '故君子日省己身、', '不敢先責人。'],
+  yomi: ['人の過ちは、人は知り易くして、己は知り難し。', '故に君子は日に己が身を省み、', '敢へて先づ人を責めず。'],
+  yaku: '他人の過ちは、他人には分かりやすいが、自分には分かりにくい。だから君子は毎日自分自身を振り返り、軽々しく先に他人をとがめたりはしない。',
+  notes: [['君子', '徳があり、立派な人'], ['日に', '毎日'], ['己身', '自分自身'], ['易', 'たやすい（ここでは「知り易し」）']],
+  tip: '「易」はここでは「たやすい」の意味で、「難」の反対。「易知」「難知」で「知り易し」「知り難し」と、返って読む。「不敢〜」は「敢へて〜ず」＝「軽々しくは〜しない」で、「できない」ではない。他人の過ちは目につくが、自分の過ちは見えにくいから、まず自分を省みる、という考え方。',
+  qs: [
+    Q3('「省」の意味として、最も適当なものを選べ。', '自分の行いを振り返ってよく考える', [['むだをなくす', '「省く」の意味。ここは「己身を省みる」で、自分をよく見直すこと。'], ['政治を行う', '「省」を役所の意味で取っている。文脈に合わない。'], ['様子を見に行く', '他人の様子を見に行く話ではない。自分自身が対象。']], 1),
+    Q3('「人易知而己難知」の解釈として、最も適当なものを選べ。', '他人の過ちは分かりやすいが、自分の過ちは分かりにくい', [['他人の過ちも自分の過ちも、分かりやすい', '「己難知」とあり、自分の過ちは分かりにくい。'], ['他人の過ちは分かりにくいが、自分の過ちは分かりやすい', '「易」と「難」の読みちがい。人は易く、己は難い。'], ['他人の過ちは分かりやすいので、見つけなくてよい', '見つけなくてよいとは言っていない。']], 0),
+    Q3('「不敢先責人」の解釈として、最も適当なものを選べ。', '軽々しく先に他人を責めたりはしない', [['他人を責めることはできない', '不敢は「敢へて〜ず」。「できない」（不能）とはちがう。'], ['他人を決して責めてはならないと命じている', '禁止（勿・莫）の文ではない。君子の態度を述べている。'], ['責めることを恐れて黙っている', '恐れる話ではない。自分を省みるのが先、ということ。']], 3),
+    Q3('この文章の趣旨として、最も適当なものを選べ。', '他人を責める前に、まず自分を省みることが大切だ', [['他人の過ちは、見て見ぬふりをするのがよい', '見て見ぬふりをする話ではない。「先づ」とあるように、順序を言っている。'], ['自分の過ちは、他人に教えてもらうべきだ', '他人に教えてもらう話は出てこない。'], ['君子は他人の過ちを決して指摘しない', '「先に責めない」ことを言っていて、決して指摘しないとは言っていない。']], 2)
+  ] },
+{ id: 't04', kind: '漢詩', title: '山居（自作の練習詩）',
+  bai: ['山静鳥声遠', '雲淡水声幽', '一杯酔花下', '都忘世間愁'],
+  yomi: ['山静かにして鳥声遠く', '雲淡くして水声幽かなり', '一杯 花下に酔ひ', '都て世間の愁ひを忘る'],
+  yaku: '山は静かで、鳥の声は遠くに聞こえる。雲は淡く、水の音はかすかだ。花の下で一杯の酒に酔い、世間の憂いをすっかり忘れてしまう。',
+  notes: [['幽', 'かすかで静かなさま'], ['世間', '俗世間'], ['愁', 'うれい、悩み']],
+  tip: '五言絶句は、一句が五字で四句。ふつう、第2句と第4句の句末で韻を踏む（ここは「幽」と「愁」）。第1句と第2句は、山↔雲、静↔淡、鳥声↔水声、遠↔幽と、同じ位置の字が対応する対句。最後の句で、作者の心情（憂いを忘れてくつろぐ）が表れる。※この詩は練習用に作ったもので、有名な詩ではない。',
+  qs: [
+    Q3('この詩の形式として、最も適当なものを選べ。', '五言絶句', [['七言絶句', '一句は五字。七字なら七言。'], ['五言律詩', '律詩は八句。この詩は四句。'], ['七言律詩', '一句は五字で、四句。七言でも律詩でもない。']], 0),
+    Q3('この詩で韻を踏んでいる字の組み合わせとして、最も適当なものを選べ。', '幽・愁', [['遠・愁', '「遠」は第1句末。五言絶句では、第1句は踏まないのがふつう。'], ['遠・幽', '「遠」は第1句末。踏んでいるのは第2句と第4句の末。'], ['下・愁', '「下」は第3句末。第3句は韻を踏まない。']], 1),
+    Q3('対句になっている句の組み合わせとして、最も適当なものを選べ。', '第1句と第2句', [['第2句と第3句', '第3句は「一杯酔花下」で、「雲淡水声幽」とは言葉の組み立てが対応しない。'], ['第3句と第4句', '第4句は「都忘世間愁」（副詞＋動詞＋目的語）で、第3句とは組み立てがちがう。'], ['第1句と第4句', '離れた句どうしで、組み立ても対応していない。']], 3),
+    Q3('この詩に表れている作者の心情として、最も適当なものを選べ。', '自然の中で酒を飲み、俗世の悩みを忘れてくつろいでいる', [['山の静けさがさびしく、人恋しく思っている', '山の描写は静かで心地よいもの。さびしさは詠まれていない。'], ['酒に酔って、過ぎた春を惜しんでいる', '春を惜しむ内容はない。最後の句は「愁いを忘れる」。'], ['世間の愁いを晴らすため、都へ帰ろうとしている', '帰る話は出てこない。山中でくつろいでいる。']], 2)
+  ] },
+{ id: 't05', kind: '漢詩', title: '春の志（自作の練習詩）',
+  bai: ['春風吹柳緑如糸', '燕子来時花満枝', '少年豈無遠志乎', '帰来更読古人詩'],
+  yomi: ['春風 柳を吹きて 緑 糸のごとし', '燕子 来たる時 花 枝に満つ', '少年 豈に遠志無からんや', '帰り来たりて 更に古人の詩を読む'],
+  yaku: '春風が柳に吹き、その緑は糸のようだ。燕が来るころ、花が枝いっぱいに咲く。少年に大きな志がないはずがない。帰ってきて、さらに昔の人の詩を読んでいるのだから。',
+  notes: [['燕子', 'つばめ'], ['遠志', '大きな志'], ['古人', '昔の人']],
+  tip: '七言絶句は、一句が七字で四句。第1・2・4句の句末で韻を踏む（糸・枝・詩）。第3句の「志」は踏まない。「豈〜乎」は反語で、「豈に〜んや」（どうして〜か、いや〜ない）。「豈無遠志乎」は「大きな志がないはずがない」の意味。「緑如糸」は、柳の緑を糸にたとえた表現（比況）。※この詩は練習用に作ったもので、有名な詩ではない。',
+  qs: [
+    Q3('この詩の形式として、最も適当なものを選べ。', '七言絶句', [['五言絶句', '一句は七字。五字なら五言。'], ['七言律詩', '律詩は八句。この詩は四句。'], ['五言律詩', '一句は七字で、四句。五言でも律詩でもない。']], 2),
+    Q3('この詩で韻を踏んでいる字の組み合わせとして、最も適当なものを選べ。', '糸・枝・詩', [['糸・枝・志', '「志」は第3句末。七言絶句でも、第3句は踏まない。'], ['糸・時・詩', '「時」は第2句の途中の字。韻は句末で踏む。'], ['枝・志・詩', '「志」は第3句末で、踏まない句。第1句の「糸」が抜けている。']], 3),
+    Q3('「少年豈無遠志乎」の解釈として、最も適当なものを選べ。', '少年に大きな志がないはずがない', [['少年に大きな志があるかどうかを、たずねている', '「豈〜乎」は、答えを求める疑問ではなく反語。たずねる形で強く打ち消す。'], ['少年に志がないのは、当然だ', '「豈無〜乎」は、「ないはずがない」という意味。「ない」と言い切ってはいない。'], ['少年は大きな志を持ってはならない', '禁止の字（勿・莫）はない。']], 0),
+    Q3('「緑如糸」の表現として、最も適当なものを選べ。', '柳の枝の緑を、糸にたとえている', [['春風を、糸にたとえている', '糸にたとえたのは、風ではなく、緑（柳）。'], ['燕を、糸にたとえている', '燕は第2句で、別に詠まれている。'], ['糸を、柳にたとえている', 'AとBが逆。柳が糸に似ているという表現。']], 1)
+  ] }
+];
+
+const T2 = [
+{ id: 't06', kind: '文章', title: '名医の答え',
+  bai: ['昔有良医、名曰仲。', '治病多愈、人皆称之。', '或問曰、子之術何其精也。必有奇方。', '医曰、吾無奇術。唯聴病者之言、尽其詳而後下薬耳。他医急於薬、不聴其言、故多誤。', '問者曰、聴言、人皆能之。何独子精也。', '医曰、人能之而不行。此所以異也。'],
+  yomi: ['昔、良医有り、名は仲と曰ふ。', '病を治して愈ゆること多く、人皆之を称す。', '或ひと問ひて曰はく、「子の術は何ぞ其れ精なるや。必ず奇方有らん」と。', '医曰はく、「吾に奇術無し。唯だ病者の言を聴き、其の詳を尽くして後に薬を下すのみ。他の医は薬に急にして、其の言を聴かず、故に誤り多し」と。', '問ふ者曰はく、「言を聴くは、人皆之を能くす。何ぞ独り子のみ精なるや」と。', '医曰はく、「人は之を能くするも行はず。此れ異なる所以なり」と。'],
+  yaku: '昔、名医がいて、名を仲といった。病気を治して治ることが多く、人々はみな彼をほめた。ある人が尋ねた。「あなたの技術は、なんとすぐれていることか。きっと特別な薬の処方があるのでしょう」と。医者は言った。「私に特別な技はない。ただ病人の話を聞き、その様子を詳しく聞き尽くしてから薬を出すだけだ。他の医者は薬を出すのを急いで、病人の言葉を聞かないので、誤りが多い」と。尋ねた人は言った。「話を聞くことは、人はみなできます。どうしてあなた一人だけがすぐれているのですか」と。医者は言った。「人はそれができるのに、実行しない。これが私と他の人とのちがう理由だ」と。',
+  notes: [['良医', '腕のよい医者'], ['奇方', '特別な薬の処方'], ['下薬', '薬を出す'], ['子', 'あなた（相手を敬って呼ぶ言葉）']],
+  tip: '「何其〜也」は「なんぞ其れ〜や」で、ここでは「なんと〜なことか」という感嘆。「於」は比べる意味ではなく、「急於薬」＝「薬に急なり」（薬を出すことを急ぐ）。「所以」は「ゆゑん」（理由・手段）。医者の答えは、「特別な技ではなく、人が誰でもできることを、実際に行っているだけだ」ということ。',
+  qs: [
+    Q3('「何其精也」の解釈として、最も適当なものを選べ。', 'なんとすぐれていることか', [['どうしてすぐれているのか、いや、すぐれていない', '反語にすると、医者をけなす意味になる。問う人は医者をほめている（前の文に「人皆称之」）。'], ['どこがすぐれているのか教えてほしい', '「何其〜也」は、感嘆を表す形。答えを求めているのではなく、まず驚きを述べている。'], ['すぐれていてはならない', '禁止の字（勿・莫）がない。']], 1),
+    Q3('「唯聴病者之言、尽其詳而後下薬耳」で、医者が行っていることとして、最も適当なものを選べ。', '病人の話を詳しく聞き尽くしてから、薬を出す', [['先に薬を出してから、病人の話を聞く', '「而後」は「そのあとで」。聞くのが先、薬が後。'], ['他の医者の話を聞いて、薬を決める', '聞くのは「病者之言」（病人の言葉）。他の医者の話ではない。'], ['病人を急いで診て、すぐ薬を出す', '急ぐのは「他医」。この医者は、詳しく聞いてから薬を出す。']], 0),
+    Q3('「他医急於薬、不聴其言、故多誤」から読み取れる、他の医者の誤りの原因として、最も適当なものを選べ。', '薬を出すのを急ぎ、病人の言葉をよく聞かないこと', [['薬の量を多くしすぎること', '薬の量の話は文中にない。'], ['病人の言葉を聞きすぎて、判断がにぶること', '「不聴其言」とあり、聞かないことが原因。'], ['病人を診る時間が長すぎること', '時間が長い話は文中になく、「急」とあるように、むしろ急ぎすぎている。']], 3),
+    Q3('「此所以異也」の解釈として、最も適当なものを選べ。', 'これが、私と他の人とのちがう理由だ', [['これが、私と他の人とのちがう場所だ', '「所」を場所に取りちがえている。「所以」は理由・方法の意味。'], ['これが、他の人にもできる方法だ', '「異」は「ちがう」。同じだと言っていない。'], ['これが、私と他の人とのちがう結果だ', '「所以」は原因・理由。結果ではない。']], 2),
+    Q3('この文章の趣旨として、最も適当なものを選べ。', '特別な技よりも、誰でもできる当たり前のことを、実際に行うことが大切だ', [['腕のよい医者は、誰にも秘密の技を持っている', '医者は「吾無奇術」と言っている。'], ['医者は、病人の話を聞くだけで、薬を出す必要はない', '「而後下薬」とあり、聞いたあとに薬を出している。'], ['人は他人の話を聞くことが、とても苦手だ', '医者が言うのは、聞くことより、「行わない」ことの方。']], 1)
+  ] },
+{ id: 't07', kind: '文章', title: '鷹と臣下',
+  bai: ['昔有王好鷹。', '使臣養之。', '鷹日食肉、臣家無粟、妻子飢。', '臣窃謂同僚曰、吾見鷹肥、妻子痩。人而不如鷹乎。', '同僚以告王。', '王召臣曰、若何不言。', '臣曰、鷹為王所愛。臣不敢言。', '王嘆曰、人而不如鷹、此吾過也。', '乃賜臣粟、使家人不飢。'],
+  yomi: ['昔、王有り、鷹を好む。', '臣をして之を養はしむ。', '鷹は日に肉を食らひ、臣の家は粟無く、妻子飢う。', '臣、窃かに同僚に謂ひて曰はく、「吾、鷹の肥えたるを見るに、妻子は痩せたり。人にして鷹に如かざるか」と。', '同僚、以て王に告ぐ。', '王、臣を召して曰はく、「若、何ぞ言はざる」と。', '臣曰はく、「鷹は王の愛する所と為る。臣、敢へて言はず」と。', '王嘆じて曰はく、「人にして鷹に如かざるは、此れ吾が過ちなり」と。', '乃ち臣に粟を賜ひ、家人をして飢ゑざらしむ。'],
+  yaku: '昔、ある王がいて、鷹を好んでいた。臣下に鷹を飼わせた。鷹は毎日肉を食べているが、臣下の家には穀物がなく、妻子は飢えていた。臣下はひそかに同僚に言った。「私は鷹が肥えているのを見るのに、妻子はやせてしまった。人でありながら、鷹にも及ばないのか」と。同僚はそれを王に告げた。王は臣下を呼んで言った。「おまえは、どうして言わなかったのか」と。臣下は言った。「鷹は王に愛されています。私は思い切って言うことができませんでした」と。王は嘆いて言った。「人でありながら鷹にも及ばないとは、これは私の過ちだ」と。そして臣下に穀物を与え、その家の者を飢えさせないようにした。',
+  notes: [['粟', '穀物のこと'], ['窃', 'ひそかに'], ['妻子', '妻と子'], ['若', 'おまえ（相手を呼ぶ言葉）'], ['愛', 'かわいがる']],
+  tip: '「使臣養之」は使役（臣をして養はしむ）。「人而不如鷹乎」は比較の「不如」で、「鷹にも及ばないのか」という嘆き。「何不言」は「何ぞ言はざる」で、「どうして言わないのか」。「為王所愛」は受身（王に愛される）。「不敢言」は「敢へて言はず」で、遠慮して言えなかった、という意味。ここでは一つの話の中に、使役・比較・疑問・受身が全部出てくる。',
+  qs: [
+    Q3('「使臣養之」の解釈として、最も適当なものを選べ。', '臣下に、鷹を飼わせた', [['臣下が、鷹に飼われた', '使は使役の字。「〜させる」の意味で、受身（〜される）ではない。'], ['臣下に、鷹を飼うのをやめさせた', '「やめさせる」の意味はない。使役は「〜させる」。'], ['臣下が、鷹を使った', '「使」を「使う」に取りちがえている。ここは使役。']], 0),
+    Q3('「人而不如鷹乎」の解釈として、最も適当なものを選べ。', '人でありながら、鷹にも及ばないのか', [['人は、鷹と同じようなものだ', '「不如」は「しかず」（及ばない）。「ごとし」（同じ）ではない。'], ['鷹は、人に及ばないのか', 'AとBが逆になっている。及ばないのは人のほう。'], ['人は、鷹に及ぶはずがない', '「乎」は嘆きの疑問。言い切る意味ではない。']], 2),
+    Q3('「若何不言」の解釈として、最も適当なものを選べ。', 'おまえは、どうして言わなかったのか', [['おまえは、言ってはならない', '禁止（勿・莫）の形ではない。「何不」は「何ぞ〜ざる」。'], ['もし言わなければ、何になるのか', '「若」は「もし」と読むこともあるが、ここは「おまえ」。王が臣下に呼びかけている。'], ['おまえは、何も言わなかった', '「何」は疑問の字。「何も〜ない」ではない。']], 1),
+    Q3('「鷹為王所愛」の解釈として、最も適当なものを選べ。', '鷹は、王に愛されている', [['鷹は、王を愛している', '「為A所V」は受身。AにVされる。愛するのは王。'], ['王は、鷹のために愛された', '主語がちがう。愛されているのは鷹。'], ['鷹が、王の愛を奪った', '「奪う」の意味はない。']], 3),
+    Q3('臣下が、「臣不敢言」と答えた理由として、最も適当なものを選べ。', '王が鷹を大切にしているので、不満を言うのをためらったから', [['王の言うことを、聞きたくなかったから', '聞きたくない話ではない。「愛される鷹」と比べて、言いにくかったから。'], ['妻子が飢えていることを、知らなかったから', '妻子の飢えは臣下がよく知っている。同僚にも話した。'], ['鷹の世話は、苦労ではなかったから', '「臣家無粟」とあり、苦労していた。']], 1),
+    Q3('「人而不如鷹、此吾過也」と言った王の気持ちとして、最も適当なものを選べ。', '臣下の家族を苦しませたことを、自分の過ちだと認めている', [['臣下が不満を言ったことを、怒っている', '王は「吾過也」と、自分の過ちだと言っている。'], ['鷹を飼うのをやめようと、決めている', '鷹をやめる話は出てこない。王は粟を与えて、臣下の家を救っている。'], ['同僚が告げ口したことを、とがめている', '同僚は臣下の言葉を王に伝えただけ。王は同僚をとがめていない。']], 2)
+  ] },
+{ id: 't08', kind: '文章', title: '書を読む人',
+  bai: ['学者貴行、不貴言。', '若能言而不能行、猶無学也。', '今人多言而少行。', '昔有人、読書万巻、而不知孝其親。', '人謂之曰、子博矣。然読書何為。', '其人無以対。', '夫書所以教人行也。', '苟不行、雖多読、亦何益。', '入宝山而空手帰、猶無獲也。', '故君子学而必行之、然後謂之学。'],
+  yomi: ['学ぶ者は行ひを貴び、言を貴ばず。', '若し能く言ひて行ふこと能はずんば、猶ほ学無きがごときなり。', '今の人は言ふこと多くして行ふこと少なし。', '昔、人有り、書を読むこと万巻なるも、其の親に孝なるを知らず。', '人、之に謂ひて曰はく、「子は博し。然れども書を読むは何の為ぞ」と。', '其の人、以て対ふる無し。', '夫れ書は、人に行ひを教ふる所以なり。', '苟くも行はずんば、多く読むと雖も、亦た何の益あらん。', '宝山に入りて空手にして帰るは、猶ほ獲る無きがごときなり。', '故に君子は学びて必ず之を行ひ、然る後に之を学と謂ふ。'],
+  yaku: '学ぶ者は行いを大切にし、言葉を大切にしない。もし上手に言えても行うことができないなら、学問がないのと同じようなものだ。今の人は言うことが多く、行うことが少ない。昔、ある人がいて、書物を万巻も読んだが、自分の親に孝行することを知らなかった。人が彼に言った。「あなたは博識だ。しかし、書物を読むのは何のためか」と。その人は答えるすべがなかった。そもそも書物は、人に行いを教えるためのものだ。もし行わないなら、たくさん読んだとしても、何の役に立とうか。宝の山に入りながら手ぶらで帰るのは、何も得られないのと同じようなものだ。だから君子は、学んで必ずそれを実行し、そのあとで、それを「学」と呼ぶ。',
+  notes: [['学者', '学ぶ人'], ['博', '知識が広い'], ['孝', '親を大切にする'], ['宝山', '宝の山'], ['空手', 'てぶら'], ['獲', '手に入れる']],
+  tip: '「若」は「もし」（仮定）と「なんぢ」（おまえ）の二つの意味があり、ここは仮定。「猶〜也」は再読文字の「猶ほ〜がごとし」。「所以」は理由だけでなく「〜するための手段・もの」の意味もあり、「書は人に行ひを教ふる所以なり」＝書物は人に行いを教えるためのもの。「雖多読、亦何益」は、「雖」（逆接の仮定）と「何益」（反語）の組み合わせ。この文章は、読むだけでなく、行うことで学問が完成する、と言っている。',
+  qs: [
+    Q3('「若能言而不能行」の「若」の意味として、最も適当なものを選べ。', 'もし（仮定）', [['おまえ（相手を呼ぶ言葉）', '「若」を「なんぢ」と取っている。ここは学ぶ者一般の話で、誰かに呼びかけていない。'], ['〜のようだ（たとえ）', '「ごとし」と読むのは如・若の別の用法。ここは「若し〜ば」で、あとに「猶〜」の結論が続く仮定の形。'], ['どうして（疑問）', '疑問の字は何・安・孰など。若にその用法はない。']], 0),
+    Q3('「其人無以対」の解釈として、最も適当なものを選べ。', 'その人は、答えるすべがなかった', [['その人は、答えようとしなかった', '「無以」は「以てする無し」＝手段がない。「しなかった」と意志で答えなかったのではなく、できなかった。'], ['その人は、答えるべきでなかった', '禁止・当然の意味ではない。'], ['その人は、答えないで人に向かった', '「対」は「答える」の意味。「向かう」ではない。']], 2),
+    Q3('「夫書所以教人行也」の解釈として、最も適当なものを選べ。', '書物は、人に行いを教えるためのものだ', [['書物は、人が行いを教えた理由にすぎない', '「所以」の「以」は「用いて」の意味で、「〜のための手段」。理由に「すぎない」の意味は出ない。'], ['書物は、人に行いを教えてはならない', '禁止の字（勿・莫）はない。'], ['書物は、人が行いを教えた場所だ', '「所」を場所に取りちがえている。']], 1),
+    Q3('「雖多読、亦何益」の解釈として、最も適当なものを選べ。', 'たくさん読んだとしても、何の役にも立たない', [['たくさん読めば、とても役に立つ', '「雖」は逆接。「亦何益」は反語で、「何の益があろうか、いや、ない」。意味が逆になっている。'], ['たくさん読むことが、何よりの利益だ', '反語の「何益」を、肯定にとりちがえている。'], ['たくさん読む人は、役に立たない人だ', '人の話ではなく、「読むこと」の効果の話。']], 3),
+    Q3('「入宝山而空手帰、猶無獲也」が表していることとして、最も適当なものを選べ。', '書物をたくさん読んでも、実行しなければ、何も得られないということ', [['書物を読むと、宝のような知識が手に入るということ', '「空手」＝手ぶらで帰る。何も得られない、という意味。'], ['宝の山は、険しく登ることができないということ', '山に登る話ではなく、入ったのに何も持ち帰れないこと。'], ['書物を読むには、手ぶらで行くのがよいということ', '読書の方法の話ではない。']], 2),
+    Q3('この文章の趣旨として、最も適当なものを選べ。', '学問は、読んで知るだけでなく、実際に行ってこそ意味がある', [['学問は、たくさん読むほどよい', '「雖多読、亦何益」と、読書量だけでは意味がないと言っている。'], ['孝行は、書物を読まなくてもできる', '孝行が書物なしでできるという話ではない。読んでも行わなかった人の話。'], ['人は、言葉よりも書物を大切にすべきだ', '「不貴言」とあるのは、言葉を貴ばないということ。書物と比べた話ではない。']], 0)
+  ] }
+];
+
+T.push.apply(T, T2);
+const T3 = [
+{ id: 't09', kind: '文章', title: '菊を植える隠者',
+  bai: ['昔有隠者、居山中、種菊数畝。', '客問曰、子何不種粟。', '隠者笑曰、粟可以養身、不可以養心。吾見菊開、則心自静。心静則身亦安。是吾所以種菊也。', '客曰、然則子独楽耳。於世何益。', '隠者曰、不然。人皆逐利而苦、吾不逐利而楽。使人知利之不可恃、則亦有益於世矣。且吾未嘗求人之知、人自来問。', '客曰、利者人所欲也、豈可棄乎。', '隠者曰、非棄之也。取之有道、須知足而止耳。若貪而不止、則利反為害。', '客乃服、願留而学焉。', '隠者曰、学者非留於我也。帰而種其心之菊、可也。'],
+  yomi: ['昔、隠者有り、山中に居り、菊を種うること数畝なり。', '客問ひて曰はく、「子、何ぞ粟を種ゑざる」と。', '隠者笑ひて曰はく、「粟は以て身を養ふべきも、以て心を養ふべからず。吾、菊の開くを見れば、則ち心自づから静かなり。心静かなれば、則ち身も亦た安し。是れ吾が菊を種うる所以なり」と。', '客曰はく、「然らば則ち子は独り楽しむのみ。世に於いて何の益あらん」と。', '隠者曰はく、「然らず。人は皆利を逐ひて苦しみ、吾は利を逐はずして楽しむ。人をして利の恃むべからざるを知らしめば、則ち亦た世に益有らん。且つ吾、未だ嘗て人の知るを求めず、人自づから来たりて問ふ」と。', '客曰はく、「利は人の欲する所なり。豈に棄つべけんや」と。', '隠者曰はく、「之を棄つるに非ざるなり。之を取るに道有り、須らく足るを知りて止まるべきのみ。若し貪りて止まらずんば、則ち利は反つて害と為らん」と。', '客、乃ち服し、願はくは留まりて学ばんと。', '隠者曰はく、「学ぶ者は、我に留まるに非ざるなり。帰りて其の心の菊を種うれば、可なり」と。'],
+  yaku: '昔、隠者がいて、山の中に住み、菊を数畝（せまい畑）に植えていた。客が尋ねた。「あなたはどうして穀物を植えないのですか」と。隠者は笑って言った。「穀物は体を養うことはできるが、心を養うことはできない。私は菊が咲くのを見ると、心がおのずと静まる。心が静まれば、体もまた安らぐ。これが私が菊を植えるわけだ」と。客は言った。「それでは、あなたはひとりで楽しんでいるだけです。世の中にとって何の役に立つのでしょうか」と。隠者は言った。「そうではない。人はみな利益を追って苦しみ、私は利益を追わずに楽しんでいる。人に、利益は頼りにならないと知らせれば、世の中にも益があるだろう。それに、私はこれまで人に知られようとしたことはないが、人のほうからやって来て尋ねる」と。客は言った。「利益は人が望むものです。どうして捨てられましょうか」と。隠者は言った。「利益を捨てるのではない。利益を取るのには正しい方法があり、満足することを知ってやめるべきだというだけだ。もし貪ってやめなければ、利益はかえって害になる」と。客はそこで感服し、できれば留まって学びたいと言った。隠者は言った。「学ぶ者は、私のもとに留まることではない。帰って、自分の心の菊を植えれば、それでよい」と。',
+  notes: [['畝', '田畑の広さの単位（ここでは「小さな畑」の意味）'], ['粟', '穀物のこと'], ['子', 'あなた（相手を呼ぶ言葉）'], ['逐', '追い求める'], ['服', '感服する、したがう']],
+  tip: '句形が多い文章。「何不〜」（なんぞ〜ざる）、「不可以〜」（以て〜べからず）、「所以」（わけ）、「耳」（のみ）、「於世何益」（反語）、「使人〜」（使役）、「不可」（〜べからず）、「未嘗」（未だ嘗て〜ず・再読文字の未）、「須」（須らく〜べし・再読文字）、「非〜也」（〜ではない）。隠者の答えの要点は、「利益を追うより、心を静める楽しみを持つ。そして、学ぶとは誰かのもとに留まることではなく、自分のやり方で実行すること」。',
+  qs: [
+    Q3('「子何不種粟」の解釈として、最も適当なものを選べ。', 'あなたはどうして穀物を植えないのか', [['あなたは穀物を植えてはならない', '禁止（勿・莫）の形ではない。「何不」は「何ぞ〜ざる」（どうして〜しないのか）。'], ['あなたは穀物を植えた', '「何不」は疑問。過去の事実を述べていない。'], ['どうして穀物を植えると、腹が満ちないのか', '「不」は「植える」を打ち消している。「満ちない」を打ち消してはいない。']], 0),
+    Q3('「須知足而止」の解釈として、最も適当なものを選べ。', '満足することを知って、やめなければならない', [['すべての満足を知って、やめる', '「須」は「すべて」ではなく、再読文字の「須らく〜べし」（ぜひ〜する必要がある）。'], ['満足を知ってはならないが、やめるのはよい', '「須」は「〜べし」。禁止の意味はない。'], ['満足して、やめることができた', '過去ではなく、すべきことを述べている。']], 3),
+    Q3('「是吾所以種菊也」の解釈として、最も適当なものを選べ。', 'これが、私が菊を植えるわけだ', [['これが、私が菊を植えた場所だ', '「所」を場所に取りちがえている。「所以」は理由の意味。'], ['これが、私が菊を植えた結果だ', '「所以」は原因・理由。結果ではない。'], ['これが、私が菊を植えない理由だ', '「不」がない。植えている理由。']], 2),
+    Q3('「於世何益」と言った客の気持ちとして、最も適当なものを選べ。', '隠者が楽しんでいるだけでは、世の中の役に立たないのではないかと疑っている', [['隠者の楽しみが世の中に大きな益をもたらすと、ほめている', '「何益」は反語で、「何の益があろうか、いや、ない」。ほめる言葉ではない。'], ['世の中のことを、隠者に教えてほしいと頼んでいる', '教えてほしいと頼む内容はない。'], ['菊の値段を、知りたがっている', '菊の値段の話は文中にない。']], 3),
+    Q3('「使人知利之不可恃」の解釈として、最も適当なものを選べ。', '人に、利益は頼りにならないと知らせる', [['人が、利益を頼りにしないと知っている', '「使」は使役。「人に知らせる」の意味で、人がすでに知っているのではない。'], ['人に、利益を頼りにしなさいと教える', '「不可恃」は「恃むべからず」（頼りにできない）。意味が逆になっている。'], ['私が、人に頼りにされないと知る', '主語がちがう。知らせるのは隠者、知るのは人。']], 0),
+    Q3('「吾未嘗求人之知」の解釈として、最も適当なものを選べ。', '私はこれまで一度も、人に知られようとしたことはない', [['私はまだ、人に知られようとしている', '「未嘗」は「未だ嘗て〜ず」（これまで一度も〜ない）。「まだ〜している」ではない。'], ['私は人に知られようとしてはならない', '禁止の意味ではない。'], ['私は人に知られることを、これから求めない', '「未嘗」は過去から今までのこと。これからの意志ではない。']], 1),
+    Q3('「帰而種其心之菊、可也」に込められた隠者の考えとして、最も適当なものを選べ。', '学ぶとは、誰かのもとに留まることではなく、自分で心を養うものを見つけて実行することだ', [['客は帰らずに、隠者のそばで菊を植えるのがよい', '「非留於我也」とあり、留まることを否定している。'], ['客は帰って、本物の菊の花を大切に育てるべきだ', '「其心之菊」は、本物の菊ではなく、心を静める自分なりのもののたとえ。'], ['客は隠者の言うことを、そのまま真似すればよい', '「其心之菊」＝自分の心の菊。真似ではなく、自分のものを見つけること。']], 2),
+    Q3('この文章の趣旨として、最も適当なものを選べ。', '利益を追うよりも、心の静けさを大切にし、それを自分の生き方として実践することが大切だ', [['人は、利益を追って、世の中の役に立つべきだ', '隠者は「人皆逐利而苦」と、利益を追うことを苦しみの原因としている。'], ['隠者は、弟子を集めて学問を広めようとした', '隠者は「非留於我」と、弟子として留まることを断っている。'], ['菊を育てることが、最も世の中の益になる', '菊を育てること自体より、心を静める生き方が主題。']], 3)
+  ] },
+{ id: 't10', kind: '文章', title: '貧しい士の進言',
+  bai: ['昔魏有良将、名曰堅。', '将出征、宴群臣。', '有一士、年少而貧、衣敝不整。群臣皆笑之。将独礼焉、問曰、子欲何言。', '士曰、臣有一言、願陳之。', '将曰、吾軍糧不足、士卒疲矣。若戦、恐不勝。', '士曰、不然。糧雖少、猶可勝也。昔善戦者、不貪多、而先去其害。今軍中有貪者、取糧過量。此害也。去之、糧足矣。', '将曰、貪者多功臣。罰之、恐失衆心。', '士曰、与其養貪者、寧罰之以安軍心。', '将従其言、罰貪者。軍心大安、遂勝。', '後将問士姓名。士曰、吾貧士耳。安足言名。将嘆曰、士不可以貌取也。欲用之、士辞而去。'],
+  yomi: ['昔、魏に良将有り、名は堅と曰ふ。', '将に出征せんとし、群臣に宴す。', '一士有り、年少くして貧しく、衣は敝れて整はず。群臣皆之を笑ふ。将独り焉を礼し、問ひて曰はく、「子、何をか言はんと欲する」と。', '士曰はく、「臣に一言有り、願はくは之を陳べん」と。', '将曰はく、「吾が軍は糧足らず、士卒疲れたり。若し戦はば、恐らくは勝たざらん」と。', '士曰はく、「然らず。糧少なしと雖も、猶ほ勝つべきなり。昔、善く戦ふ者は、多きを貪らずして、先づ其の害を去る。今、軍中に貪る者有り、糧を取ること量を過ぐ。此れ害なり。之を去らば、糧足らん」と。', '将曰はく、「貪る者には功臣多し。之を罰せば、恐らくは衆心を失はん」と。', '士曰はく、「其の貪る者を養はんよりは、寧ろ之を罰して以て軍心を安んぜよ」と。', '将、其の言に従ひ、貪る者を罰す。軍心大いに安んじ、遂に勝つ。', '後に将、士の姓名を問ふ。士曰はく、「吾は貧士なるのみ。安くんぞ名を言ふに足らん」と。将嘆じて曰はく、「士は貌を以て取るべからざるなり」と。之を用ひんと欲するも、士辞して去る。'],
+  yaku: '昔、魏に優れた将軍がいて、名を堅といった。出征しようとして、家臣たちを集めて宴会を開いた。一人の士（若い家臣）がいて、年は若く貧しく、衣は破れて整っていなかった。家臣たちはみな彼を笑った。将軍だけは彼を丁重に迎え、尋ねた。「あなたは何を言いたいのか」と。士は言った。「私に一つ申し上げたいことがあります。どうか述べさせてください」と。将軍は言った。「わが軍は食糧が足りず、兵士は疲れている。もし戦えば、おそらく勝てないだろう」と。士は言った。「そうではありません。食糧は少なくても、それでも勝つことはできます。昔、戦いの上手な者は、多くを得ようとせず、まず害を取り除きました。今、軍の中に貪る者がいて、食糧を取る量が度を過ぎています。これが害です。これを取り除けば、食糧は足りるでしょう」と。将軍は言った。「貪る者には功労のある臣が多い。罰すれば、おそらく人心を失うだろう」と。士は言った。「貪る者を養っておくよりは、むしろこれを罰して、軍の士気を安定させるべきです」と。将軍はその言葉に従い、貪る者を罰した。軍の士気は大いに安定し、ついに勝った。のちに将軍は士の姓名を尋ねた。士は言った。「私は貧しい士にすぎません。どうして名乗るほどのことがありましょうか」と。将軍は嘆いて言った。「士は外見で判断してはならないものだ」と。彼を用いようとしたが、士は辞退して去っていった。',
+  notes: [['群臣', '多くの家臣'], ['士', '家臣、若者'], ['糧', '食糧'], ['陳', '申し述べる'], ['軍心', '軍の士気、兵士の気持ち']],
+  tip: '「将出征」の将は再読文字（将に〜んとす）。「若戦、恐不勝」の若は仮定の「もし」。「独礼焉」の独は「ただ一人（他の者とちがって）」、焉は「之」の意味（士を指す）。「雖」は逆接の仮定（〜と雖も）。「去之、糧足矣」の「之」は、直前の「害」を指す。「与其A寧B」は選択（AよりはむしろB）。「安足言名」は反語（どうして〜に足ろうか）で、名乗るほどの者ではない、という謙遜。将軍は、外見や身分で人を判断せず、貧しい士の進言を聞き入れたので、勝つことができた。',
+  qs: [
+    Q3('「将出征」の解釈として、最も適当なものを選べ。', 'これから出征しようとして', [['将軍が出征して', '「将」を「将軍」と取りちがえている。ここは「将に〜んとす」（これから〜しようとする）の再読文字。'], ['出征したので', '過去ではなく、これからのこと。「将」は未来を表す。'], ['出征してはならないので', '禁止の意味はない。']], 1),
+    Q3('「将独礼焉」の「独」の意味として、最も適当なものを選べ。', '他の者はちがったが、将軍だけは', [['将軍がひとりぼっちで', '「ひとりで（孤独に）」ではなく、「ただ〜だけ」と他と比べて限定する意味。'], ['将軍が自分勝手に', '「独断で」の意味にはならない。'], ['将軍が何度も', '回数の意味はない。']], 0),
+    Q3('「若戦、恐不勝」の解釈として、最も適当なものを選べ。', 'もし戦えば、おそらく勝てないだろう', [['おまえが戦うと、勝てなくなることを恐れる', '「若」を「おまえ」に取りちがえている。ここは将軍が自分の軍の話をしているので、「もし」。'], ['もし戦わなければ、きっと勝つだろう', '「不勝」は「勝てない」。意味が逆になっている。'], ['戦っても、少しも恐れず必ず勝つ', '「恐」は「おそらく」「恐れる」の意味。恐れていない、という意味ではない。']], 2),
+    Q3('「昔善戦者、不貪多、而先去其害」の解釈として、最も適当なものを選べ。', '戦いの上手な者は、多くを得ようとせず、まず害を取り除いた', [['戦いの上手な者は、多くを得ようとして、害を後回しにした', '「不貪多」＝多くを貪らない。「先去其害」＝先に害を去る。どちらも意味が逆。'], ['戦いの下手な者は、多くを得ようとせず、害を取り除いた', '「善戦者」は「戦いの上手な者」。'], ['戦いの上手な者は、害を取り除いて、多くを得た', '「不貪多」は「多くを貪らない」。得ようとしなかったと言っている。']], 3),
+    Q3('「去之、糧足矣」の「之」が指すものとして、最も適当なものを選べ。', '軍の中の貪る者が、食糧を取りすぎるという害', [['敵の軍勢', '敵の話は文中にない。直前の「此害也」の害を指す。'], ['士の貧しさ', '士の貧しさは害ではない。直前の文で、害とされているのは貪る者の行い。'], ['食糧が足りないという状況', '食糧が足りないのは、害を去ったあとで解決する結果。「之」は去るべき原因を指す。']], 0),
+    Q3('「与其養貪者、寧罰之以安軍心」の解釈として、最も適当なものを選べ。', '貪る者を養っておくよりは、むしろ罰して、軍の士気を安定させるべきだ', [['貪る者を罰するよりは、むしろ養っておくべきだ', '「与其」のあとが捨てる案、「寧」のあとが選ぶ案。AとBが逆になっている。'], ['貪る者を養うことと、罰することの両方をすべきだ', '「与其A寧B」は二つのうちのBを選ぶ形。両方ではない。'], ['貪る者を養えば、軍の士気が安定する', '選択の形を、ただの事実の言い方に取りちがえている。']], 2),
+    Q3('「安足言名」の解釈として、最も適当なものを選べ。', 'どうして名を言うほどのことがあろうか（いや、名乗るほどの者ではない）', [['どこで名を言えばよいのか', '「安」は場所ではなく反語を表す。「安くんぞ〜んや」。'], ['名を言うのに十分だ', '反語を肯定にとりちがえている。'], ['名を言ってはならない', '禁止（勿・莫）ではなく、反語。']], 2),
+    Q3('この文章から読み取れる内容として、最も適当なものを選べ。', '将軍は、外見や身分にとらわれず、士の進言を聞き入れたので、勝つことができた', [['貧しい士は、将軍に褒美をもらって出世した', '褒美の話はない。士は名乗らずに終わっている。'], ['食糧が十分あったので、軍は戦いに勝った', '食糧が足りない状況が出発点で、害を取り除いて勝った。'], ['群臣たちの意見に従って、将軍は戦った', '群臣は士を笑っていただけ。将軍は士の言葉に従った。']], 1)
+  ] }
+];
+
+T.push.apply(T, T3);
+const T4 = [
+{ id: 't11', kind: '文章', title: '良馬を見抜く人',
+  bai: ['昔有人、得良馬、不識其良。', '遂使耕田、馬日羸痩。', '一日、善相馬者過其門、見之驚曰、此千里馬也。何使耕田乎。', '其人大悔、乃易其飼。数月馬復壮。一日行千里。', '其人嘆曰、馬非不良、吾不識之耳。'],
+  yomi: ['昔、人有り、良馬を得たれども、其の良なるを識らず。', '遂に田を耕さしめ、馬日に羸痩す。', '一日、善く馬を相する者其の門を過ぎ、之を見て驚きて曰はく、「此れ千里の馬なり。何ぞ田を耕さしめんや」と。', '其の人大いに悔い、乃ち其の飼を易ふ。数月にして馬復た壮んなり。一日にして千里を行く。', '其の人嘆じて曰はく、「馬は良からざるに非ず、吾、之を識らざるのみ」と。'],
+  yaku: '昔、ある人がいて、よい馬を手に入れたが、その馬のよさを見抜けなかった。そこで馬に田を耕させ、馬は日ごとにやせおとろえていった。ある日、馬を見分けるのが上手な人がその家の門の前を通りかかり、馬を見て驚いて言った。「これは千里を走る名馬だ。どうして田を耕させているのか（耕させてはならない）」と。持ち主は大いに後悔し、えさを改めた。数か月で馬はまた元気になり、一日に千里を走るようになった。持ち主は嘆いて言った。「馬が悪かったのではない。私がそれを見抜けなかっただけだ」と。',
+  notes: [['相', '見て、よしあしを見分ける'], ['過', '通りかかる、立ち寄る'], ['羸痩', 'やせおとろえること'], ['飼', 'えさ'], ['易', '改める、取りかえる'], ['壮', '元気で強い']],
+  tip: '「使」は使役（〜しむ）。「何〜乎」は反語（どうして〜か、いや〜ない）。「非不良」は二重否定で「良くないわけではない＝良い」。「耳」は限定の「のみ」で、文末にある「だけだ」の意味。ここまで学んだ句形がこの短い文にいくつも入っています。',
+  qs: [
+    Q3('「何使耕田乎」の解釈として、最も適当なものを選べ。', 'どうして田を耕させておくのか（耕させてはならない）', [['何を使って田を耕すのか', '「何」を「何を」の疑問に、「使」を「使う」に取りちがえている。ここは「何ぞ〜乎」の反語と、「使」の使役。'], ['田を耕させてほしい', '願望の形ではない。「何ぞ〜乎」は反語（〜か、いや〜ない）の形。'], ['いつ田を耕させたのか', '「何」は時を尋ねているのではない。「何ぞ」は理由を問う（反語の）形。']], 1),
+    Q3('「馬非不良」の解釈として、最も適当なものを選べ。', '馬は良くないわけではない（良い馬だ）', [['馬は良くない', '「非」と「不」の二つの否定がある。二つ重なると打ち消しあって肯定になる（二重否定）。'], ['馬は良いとは限らない', '部分否定（不必ず〜など）の形ではない。「非不〜」は二重否定。'], ['馬は良くなければならない', '「非」を「〜べからず」「〜べし」のような当然の意味に取りちがえている。']], 0),
+    Q3('「吾不識之耳」の「耳」の働きとして、最も適当なものを選べ。', '「〜だけだ」と限定する', [['体の「耳」の意味で用いている', '文末の「耳」は体の部位ではない。「〜のみ」と読む限定の助字。'], ['「〜か」と疑問を表している', '疑問なら「乎」「哉」などを使う。「耳」は限定。'], ['「〜なかれ」と禁止を表している', '禁止は「勿」「莫」などを使う。「耳」は限定。']], 2),
+    Q3('この文章から読み取れる内容として、最も適当なものを選べ。', '才能は、それを見抜く人がいてはじめて生かされる', [['良い馬は、どんな主人のもとでも千里を走る', '主人が見抜けなかったために、馬は田を耕して痩せている。主人しだいで生きも死にもする。'], ['馬は、えさを変えたから千里を走れるようになった', 'えさは手段にすぎない。大事なのは、名馬だと気づいたこと。'], ['千里を走る馬は、田を耕すのが得意である', '田を耕して痩せたとあり、得意とは書かれていない。']], 1)
+  ] },
+{ id: 't12', kind: '文章', title: '水と人',
+  bai: ['水無常形、随器而変。', '人無常性、随友而変。', '故君子慎交友、猶舟人慎風浪也。'],
+  yomi: ['水は常の形無く、器に随ひて変ず。', '人は常の性無く、友に随ひて変ず。', '故に君子は交友を慎むこと、猶ほ舟人の風浪を慎むがごときなり。'],
+  yaku: '水には決まった形がなく、入れる器に合わせて形が変わる。人にも決まった性質はなく、付き合う友に合わせて変わる。だから君子が交友を慎重にするのは、ちょうど船頭が風や波に気をつけるのと同じである。',
+  notes: [['常形', '決まった形'], ['常性', '決まった性質'], ['随', 'したがう（合わせる）'], ['舟人', '船頭、船乗り'], ['風浪', '風と波']],
+  tip: '「猶〜也」は再読文字「猶」のうち、「猶ほ〜がごとし」の形。「猶」は最初に「猶ほ」と読み、文末近くで「ごとし」と読みます。「而」は「しかして」ですが、ここでは読まない置き字です。対句（水＝人、器＝友）の形を見つけると、意味がとりやすくなります。',
+  qs: [
+    Q3('「随器而変」の解釈として、最も適当なものを選べ。', '器に従って形が変わる', [['器を従えて形を変える', '「随」は「したがう」。従うのは水のほうで、器を従えるのではない。'], ['器に従わずに形が変わる', '「随」を「したがわない」と否定に取りちがえている。'], ['器のうしろから水が流れ出る', '「随」を位置の意味に取りちがえている。ここは「合わせる」の意味。']], 0),
+    Q3('「人無常性」の解釈として、最も適当なものを選べ。', '人には決まった性質がない', [['人はいつも性質を持っていない', '「常性」は「決まった性質」。「常」を「いつも」の副詞に取りちがえている。'], ['人には性質というものがある', '「無」を見落として、肯定にしている。'], ['人は常に同じ性質を持つ', '「無常性」は「決まった性質がない」。意味が逆になっている。']], 1),
+    Q3('「猶舟人慎風浪也」の書き下し文として、最も適当なものを選べ。', '猶ほ舟人の風浪を慎むがごときなり', [['猶ほ舟人は風浪を慎みて', '再読文字「猶」の二度目の読み「ごとし」が抜けている。'], ['舟人を猶ほ風浪のごとく慎む', '「舟人」と「風浪」の関係が逆。返り点どおり、風浪→慎む→猶（ごとし）と読む。'], ['猶ほ舟人は風浪を慎まざるがごとし', '本文に否定の「不」はない。']], 3),
+    Q3('この文章の趣旨として、最も適当なものを選べ。', '人は付き合う友に影響されて変わるので、君子は交友を慎重に選ぶ', [['人は水のように、どんな友とも付き合うべきだ', '本文は「誰とでも付き合え」とは言っていない。交友は慎むべきものとしている。'], ['人の性質は生まれつき決まっていて変わらない', '「人無常性」とあり、決まった性質はないと言っている。'], ['船頭のように、風や波を恐れず友と付き合うべきだ', '船頭は風浪を「慎む」（気をつける）人。恐れずに、ではない。']], 1)
+  ] },
+{ id: 't13', kind: '文章', title: 'うそつきの牧童',
+  bai: ['昔有牧童、好戯人。', '毎登丘、呼曰、狼来。', '村人驚走、牧童大笑。', '数日後、狼真至。', '牧童呼救。', '村人曰、彼又戯耳。不往救。', '羊尽為狼所食。', '牧童後悔無及。'],
+  yomi: ['昔、牧童有り、人を戯るるを好む。', '丘に登る毎に、呼びて曰はく、「狼来たれり」と。', '村人驚きて走り、牧童大いに笑ふ。', '数日の後、狼真に至る。', '牧童救ひを呼ぶ。', '村人曰はく、「彼又戯るるのみ」と。往きて救はず。', '羊尽く狼の食らふ所と為る。', '牧童後悔すれども及ぶ無し。'],
+  yaku: '昔、羊飼いの少年がいて、人をからかうのが好きだった。丘に登るたびに「狼が来たぞ」と叫び、村人が驚いて走ってくると、少年は大笑いした。数日後、本当に狼が来た。少年は助けを求めて叫んだ。村人は「あの子はまたふざけているだけだ」と言って、助けに行かなかった。羊はすべて狼に食べられてしまった。少年は後悔したが、もう取り返しがつかなかった。',
+  notes: [['牧童', '羊飼いの少年'], ['戯', 'からかう、ふざける'], ['毎', '〜するたびに'], ['真', '本当に'], ['及ぶ無し', '取り返しがつかない']],
+  tip: '「為A所B」（AのBする所と為る）は受身の形で、「狼に食べられる」の意味。「無及」は「及ぶ無し」で、手遅れの意味。「耳」は限定の「のみ」。書き下しで「毎」を後ろに回して読むところ（丘に登る毎に）にも注意しましょう。',
+  qs: [
+    Q3('「羊尽為狼所食」の解釈として、最も適当なものを選べ。', '羊はすべて狼に食べられた', [['羊はすべて狼を食べた', '「為A所B」は受身の形。食べられたのは羊のほう。'], ['羊はすべて狼のために食べ物を探した', '「為」を「ために」と取りちがえている。「為A所B」で受身になる。'], ['狼は羊を残らず食べるつもりだった', '意志の形ではない。「為A所B」は受身で、実際に食べられたという結果を述べている。']], 2),
+    Q3('「彼又戯耳」の解釈として、最も適当なものを選べ。', 'あの子はまたふざけているだけだ', [['あの子は又のように耳をふざけている', '「耳」は体の部位ではなく、文末の限定の助字。'], ['あの子はまたふざけているのだろうか', '疑問なら「乎」「哉」などを使う。「耳」は「〜のみ」の限定。'], ['あの子はもうふざけてはいけない', '禁止は「勿」「莫」などを使う。ここは限定。']], 1),
+    Q3('「不往救」の解釈として、最も適当なものを選べ。', '行って救わなかった', [['行って救うことができなかった', '可能（不能）ではない。村人は行く気がなく、行かなかった。'], ['救いに行ってはならない', '禁止は「勿」「莫」など。「不」は単なる打ち消し。'], ['行かずに救おうとした', '「不」は「往救」全体を打ち消している。行かなかったし、救わなかった。']], 0),
+    Q3('「牧童後悔無及」の解釈として、最も適当なものを選べ。', '後悔したが、取り返しがつかなかった', [['及ぶ者がないほど、深く後悔した', '「無及」は「及ぶ無し」で、手遅れの意味。「後悔の深さが並ぶ者がない」ではない。'], ['後悔する者は一人もいなかった', '後悔したのは牧童。「後悔」のあとに「無及」と続く構造を取りちがえている。'], ['後悔はせず、新たな羊を探した', '本文に新たな羊の話はない。後悔したと書いてある。']], 0),
+    Q3('この文章から読み取れる内容として、最も適当なものを選べ。', 'うそを重ねると、本当に助けが必要なときに信じてもらえない', [['狼は、羊飼いの少年を食べてしまった', '食べられたのは羊。少年は食べられていない。'], ['村人は、少年が好きだから助けに行かなかった', '村人は少年のふざけを疑って行かなかった。好意の話ではない。'], ['丘に登れば、必ず狼が来る', '丘と狼は、少年がうそをつく場所として出ているだけで、因果の話ではない。']], 1)
+  ] },
+{ id: 't14', kind: '文章', title: '井の中の蛙',
+  bai: ['井中有蛙、自謂楽。', '有海鼈過之、', '蛙語之曰、子来観吾楽。', '鼈曰、海広無涯際。井安足比乎。', '蛙大驚、不能言。'],
+  yomi: ['井中に蛙有り、自ら楽しと謂ふ。', '海鼈有りて之を過ぐ。', '蛙之に語げて曰はく、「子来たりて吾が楽しみを観よ」と。', '鼈曰はく、「海は広くして涯際無し。井は安くんぞ比ぶるに足らんや」と。', '蛙大いに驚き、言ふ能はず。'],
+  yaku: '井戸の中に蛙がいて、自分は楽しいと思っていた。そこへ海の大ガメが通りかかった。蛙は亀に言った。「あなたも来て、私の楽しみを見なさい」と。亀は言った。「海は広くて果てがない。井戸など比べるに足りようか（いや、足りない）」と。蛙は大いに驚き、何も言えなかった。',
+  notes: [['海鼈', '海にいる大きな亀'], ['過', '通りかかる'], ['語', '話しかける、告げる'], ['涯際', '果て、はし'], ['子', 'あなた']],
+  tip: '「安足比乎」の「安〜乎」は反語で、「安くんぞ〜んや」（どうして〜だろうか、いや〜ない）。「不能言」の「不能」は「〜できない」で、能力・可能の否定です。「乎」は文末で、読まずに反語の気持ちを表します。',
+  qs: [
+    Q3('「井安足比乎」の解釈として、最も適当なものを選べ。', '井戸など、比べるに足りようか（いや、足りない）', [['井戸は、どこで比べればよいのか', '「安」を場所を問う意味に取りちがえている。「安くんぞ〜んや」は反語。'], ['井戸は、比べるのに十分である', '反語を単なる肯定に取りちがえている。意味が逆になっている。'], ['井戸を比べてはならない', '禁止（勿・莫）の形ではない。「安〜乎」は反語。']], 0),
+    Q3('「有海鼈過之」の「有」の働きとして、最も適当なものを選べ。', '「海鼈がいる」という存在を表す', [['「持っている」という所有を表す', '「有」は「持つ」の意味もあるが、ここでは「海鼈がいる」と、存在を示している。'], ['「ある」という状態の変化を表す', '変化ではなく、存在。「〜有り」の形で場面に登場することを示している。'], ['「〜を過ぎる」という動作の主語を表す', '主語を示す働きは「有」にはない。「有」は存在を述べる。']], 1),
+    Q3('「不能言」の解釈として、最も適当なものを選べ。', '言うことができなかった', [['言おうとしなかった', '「不」だけなら単なる打ち消しだが、「不能」は「できない」という可能の否定。意志の話ではない。'], ['言ってはならなかった', '禁止は「勿」「莫」。「不能」は「できない」。'], ['言う必要がなかった', '必要（不須）の意味ではない。驚いて何も言えなかった。']], 2),
+    Q3('この文章の亀の言葉に込められた考えとして、最も適当なものを選べ。', '狭い世界しか知らないと、もっと広い世界があることに気づけない', [['井戸の中は、海よりも安全である', '安全か危険かは問題にしていない。広さの違いを述べている。'], ['蛙は海に住むべきである', '「住むべき」という勧めは文中にない。亀は海の広さを伝えただけ。'], ['亀は、蛙の楽しみをうらやましく思った', 'うらやましさは書かれていない。亀は広さの違いを述べている。']], 3)
+  ] }
+];
+T4.push(
+{ id: 't15', kind: '漢詩', title: '秋の夜（自作の練習詩）',
+  bai: ['夜深霜露白', '客枕思悠悠', '鐘断月将落', '寒蛩鳴不休'],
+  yomi: ['夜 深くして 霜露 白く', '客枕 思ひ 悠悠たり', '鐘 断えて 月 将に落ちんとし', '寒蛩 鳴きて 休まず'],
+  yaku: '夜はふけて、霜と露が白く光っている。旅の枕に横たわると、思いはどこまでも遠くへ続いていく。鐘の音もとだえ、月は今にも沈もうとしているのに、寒そうなこおろぎは鳴きやまない。',
+  notes: [['客枕', '旅先の枕（旅寝）'], ['悠悠', '遠く、はるかに続くさま'], ['鐘断', '鐘の音がとだえる'], ['寒蛩', '寒さの中で鳴くこおろぎ']],
+  tip: '五言絶句は、一句が五字で四句。第2・4句の句末で韻を踏む（悠・休）。第1句末の「白」と第3句末の「落」は踏まない。「月将落」の「将」は再読文字で、「月 将に落ちんとす」（今にも落ちようとする）。※この詩は練習用に作ったもので、有名な詩ではない。',
+  qs: [
+    Q3('この詩の形式として、最も適当なものを選べ。', '五言絶句', [['七言絶句', '一句は五字。七字なら七言。'], ['五言律詩', '律詩は八句。この詩は四句。'], ['七言律詩', '一句は五字で四句。七言でも律詩でもない。']], 0),
+    Q3('第2句末の「悠」と韻を踏んでいる字として、最も適当なものを選べ。', '休', [['白', '第1句末。五言絶句では、第1句は韻を踏まないことが多い。'], ['落', '第3句末。第3句は踏まない句。'], ['露', '句末ではなく第1句の途中の字。韻は句末で踏む。']], 3),
+    Q3('「月将落」の解釈として、最も適当なものを選べ。', '月が今にも沈もうとしている', [['月は沈むべきだ', '「当」「須」のように「〜べし」の意味の再読文字ではない。「将」は「まさに〜んとす」。'], ['月は将軍のように沈む', '「将」を名詞の「将軍」に取りちがえている。ここは再読文字。'], ['月は沈まなかった', '否定の字はない。「将落」は「今にも落ちようとする」。']], 1),
+    Q3('この詩全体に描かれている気持ちとして、最も適当なものを選べ。', '旅先で眠れず、遠くのことを思う寂しい気持ち', [['旅を楽しんでいる気持ち', '「客枕思悠悠」「寒蛩」など、寂しさをさそう景色が並んでいる。楽しい様子は読み取れない。'], ['夜明けを待ちわびる期待', '月が沈むのは夜が終わる気配だが、期待は詠まれていない。眠れぬ寂しさが中心。'], ['友人と再会した喜び', '友人は出てこない。旅先でひとり思いにふけっている。']], 0)
+  ] },
+{ id: 't16', kind: '漢詩', title: '山道（自作の練習詩）',
+  bai: ['晩来山雨洗新秋', '一径入雲溪水流', '莫笑樵夫衣帯薄', '白頭猶自上高丘'],
+  yomi: ['晩来 山雨 新秋を洗ひ', '一径 雲に入りて 溪水 流る', '笑ふこと莫かれ 樵夫の衣帯の薄きを', '白頭 猶ほ自ら 高丘に上る'],
+  yaku: '夕方から降った山の雨が、秋のはじめの空気を洗い清めた。一本の小道は雲の中へ入っていき、谷川の水が流れている。きこりの衣や帯が粗末なのを笑ってはならない。白髪になっても、なお自分の足で高い丘に登っているのだから。',
+  notes: [['晩来', '夕方になってから'], ['新秋', '秋のはじめ'], ['一径', '一本の小道'], ['溪水', '谷川の水'], ['樵夫', 'きこり'], ['白頭', '白髪頭（年老いたこと）']],
+  tip: '七言絶句。第1・2・4句の句末で韻を踏む（秋・流・丘）。第3句末の「薄」は踏まない。「莫笑〜」は禁止で、「笑ふこと莫かれ」（笑ってはならない）。この詩の「猶」は再読文字ではなく、ふつうの副詞「なほ」（それでもなお）。再読文字の「猶ほ〜ごとし」とまぎらわしいので区別しましょう。※この詩は練習用に作ったもので、有名な詩ではない。',
+  qs: [
+    Q3('この詩で韻を踏んでいない句末の字として、最も適当なものを選べ。', '薄', [['秋', '第1句末。七言絶句では、第1句末は韻を踏むことが多い。ここでも踏んでいる。'], ['流', '第2句末。韻を踏んでいる。'], ['丘', '第4句末。韻を踏んでいる。']], 3),
+    Q3('「莫笑樵夫衣帯薄」の解釈として、最も適当なものを選べ。', 'きこりの身なりが粗末なのを笑ってはならない', [['きこりは粗末な身なりを笑ったことがない', '「莫」は禁止で「〜するな」。過去の経験を述べる形ではない。'], ['きこりの身なりを笑うのがよい', '禁止を勧めに取りちがえている。意味が逆。'], ['きこりは粗末な身なりを恥じて笑わない', '笑うのは「きこり」ではなく、読者や周りの人。主語を取りちがえている。']], 0),
+    Q3('「白頭猶自上高丘」の解釈として、最も適当なものを選べ。', '白髪になっても、なお自分の足で高い丘に登っている', [['白髪頭は、高い丘のようである', '「猶」を再読文字（猶ほ〜ごとし）に取りちがえている。この詩では副詞の「なほ」で、末尾に「如」はない。'], ['白髪になったので、丘に登るのをやめた', '「猶」は「それでもなお」という意味。やめたのではなく、続けている。'], ['白髪を、高い丘が見下ろしている', '丘が主語ではない。登っているのは白髪頭の人（きこり）。']], 1),
+    Q3('この詩で作者が伝えようとしていることとして、最も適当なものを選べ。', '身なりは粗末でも、年をとっても自分の足で歩み続ける人は立派だ', [['年をとったら、高い丘に登るのはやめるべきだ', '登り続ける人をほめている。やめるべきとは言っていない。'], ['きこりは貧しいので、助けてあげるべきだ', '「笑うな」と言っているが、助ける話ではない。'], ['秋の雨は、人を悲しい気持ちにさせる', '雨は「秋を洗う」と詠まれ、すがすがしい景色。悲しみの話ではない。']], 0)
+  ] }
+);
+
+T.push.apply(T, T4);
+const T5 = [
+{ id: 't17', kind: '文章', title: '約束を守る商人',
+  bai: ['昔有商人、名曰信。', '一日、客買布、約明日来取布。', '夜、他客来、出倍価求之。', '商人曰、既約矣。不可復売。', '客曰、何固守一約乎。', '商人曰、信者商之本也。失信則無客。', '後客皆信之、商大富。'],
+  yomi: ['昔、商人有り、名は信と曰ふ。', '一日、客布を買ひ、明日来たりて布を取らんと約す。', '夜、他の客来たり、倍の価を出だして之を求む。', '商人曰はく、「既に約せり。復た売るべからず」と。', '客曰はく、「何ぞ固く一約を守るや」と。', '商人曰はく、「信は商の本なり。信を失へば則ち客無し」と。', '後に客皆之を信じ、商大いに富む。'],
+  yaku: '昔、信という名の商人がいた。ある日、客が布を買い、明日取りに来ると約束した。夜になって、別の客が来て、倍の値段を出して布を求めた。商人は「すでに約束した。もう売ることはできない」と言った。客は「どうしてたった一つの約束をそんなに固く守るのか」と言った。商人は「信用は商売のもとだ。信用を失えば客はいなくなる」と言った。のちに客はみな商人を信じるようになり、商人は大いに栄えた。',
+  notes: [['約', '約束する'], ['倍価', '二倍の値段'], ['固', 'かたく、しっかりと'], ['本', 'もと、根本'], ['信', '信用、約束を守ること']],
+  tip: '「不可〜」は「〜べからず」で、禁止や不可能を表します。「失信則無客」の「則」は「〜すれば、そのときは」と条件をつなぐ字で、仮定の文によく出ます。「何〜乎」は理由をたずねる疑問（どうして〜か）。「之」が何を指すかは、直前の内容にもどって確かめます（ここでは布）。',
+  qs: [
+    Q3('「不可復売」の解釈として、最も適当なものを選べ。', 'もう売ることはできない', [['もう売らなくてもよい', '「不必」「不須」のような不要の形ではない。「不可」は禁止・不可能。'], ['また売らなければならない', '「不可」は打ち消し。義務なら「不可不〜」の二重否定の形になる。'], ['売ったことがない', '経験を述べる形（未嘗）ではない。「復」は「また」の意味。']], 0),
+    Q3('「失信則無客」の解釈として、最も適当なものを選べ。', '信用を失えば、客はいなくなる', [['信用を失ったので、客がいなかった', '「則」は仮定・条件をつなぐ字。すでにあった事実ではなく、これから起こることを述べている。'], ['客がいなければ、信用を失う', '原因と結果が逆になっている。「失信」が先で、結果が「無客」。'], ['信用を失うと、客が増える', '「無」を見落としている。「無客」は客がいなくなること。']], 2),
+    Q3('「約明日来取布」の「約」の意味として、最も適当なものを選べ。', '約束する', [['およそ', '「約」を「およそ」の意味に取りちがえている。ここは「明日来て布を取る」ことを約束した。'], ['断る', '「約」は結ぶ意味で、断る意味はない。'], ['縮める', '「約」を「ちぢめる」と取りちがえている。文脈に合わない。']], 0),
+    Q3('「出倍価求之」の「之」が指すものとして、最も適当なものを選べ。', '布', [['商人', '「之」は求められたもの。商人は求められる側ではなく、売る側。'], ['約束', '約束を「求める」のではなく、買いたいもの（布）を求めている。'], ['倍価', '「倍価」は出したお金。「之」は求めるほうのもの。']], 3),
+    Q3('この文章から読み取れる商人の考えとして、最も適当なものを選べ。', '約束を守って信用を得ることが、商売の土台になる', [['高く買う客には、すぐに売るのがよい', '商人は倍の値段でも断った。利益より約束を大切にしている。'], ['客は、値段だけで店を選ぶ', '本文は「信用を失えば客が去る」と言っている。値段が第一とは言っていない。'], ['約束は、状況に応じて破ってもよい', '商人は「既約矣」と言って断った。約束を破らなかった。']], 1)
+  ] },
+{ id: 't18', kind: '文章', title: '老馬の知恵',
+  bai: ['昔有数人、入山迷路。', '日暮不得出。', '一人曰、老馬嘗行此路。其知路、勝吾輩。', '乃放老馬而従之。果得出。', '衆嘆曰、馬尚知路、況人乎。'],
+  yomi: ['昔、数人有り、山に入りて路に迷ふ。', '日暮れて出づるを得ず。', '一人曰はく、「老馬嘗て此の路を行く。其の路を知ること、吾輩に勝る」と。', '乃ち老馬を放ちて之に従ふ。果たして出づるを得たり。', '衆嘆じて曰はく、「馬すら尚ほ路を知る、況んや人をや」と。'],
+  yaku: '昔、数人の旅人が山に入って道に迷った。日が暮れても出ることができない。一人が言った。「この老いた馬は、かつてこの道を通ったことがある。道を知っていることでは、私たちよりまさっている」と。そこで老馬を放して、そのあとについて行った。すると、山を出ることができた。みなは嘆いて言った。「馬でさえ道を知っている。まして人間ならなおさらだ（人も学ばねばならない）」と。',
+  notes: [['迷路', '道に迷う'], ['老馬', '年老いた馬'], ['嘗', 'かつて、以前に'], ['吾輩', '私たち'], ['衆', 'みな、人々'], ['尚', 'なお、〜でさえ']],
+  tip: '「A尚B、況C乎」は抑揚の形で、「AでさえBだ、まして〜ならなおさらだ」（況んやCをや）。Aを軽く、Cを重く言って、Cを強調します。「勝」は比較で「〜にまさる」。「嘗」は「かつて」と読む副詞です（「未嘗」は「いまだかつて〜ず」）。',
+  qs: [
+    Q3('「馬尚知路、況人乎」の解釈として、最も適当なものを選べ。', '馬でさえ道を知っている。まして人間ならなおさらだ', [['馬は道を知っているが、人間は知らない', '抑揚の形は「AでさえBだ、まして〜」と強調する。馬と人を対立させてはいない。'], ['馬は人間よりも道をよく知っている', '比較の形ではない。「況〜乎」は「まして〜ならなおさら」と強める形。'], ['馬が道を知らないのだから、人間が知るはずもない', '「尚知路」は「道を知っている」。意味が逆になっている。']], 1),
+    Q3('「老馬嘗行此路」の「嘗」の意味として、最も適当なものを選べ。', 'かつて', [['しばしば', '「しばしば」は「屢」「数」などの字。「嘗」は「かつて」。'], ['いま', '「嘗」は過去を表す。現在ではない。'], ['なめる', '動詞「なめる」の意味もあるが、ここは副詞で、「かつて通った」の意味。']], 0),
+    Q3('「其知路、勝吾輩」の解釈として、最も適当なものを選べ。', '道を知っていることでは、私たちよりまさっている', [['道を知っていることでは、私たちに負けている', '「勝」は「まさる」。意味が逆になっている。'], ['道を知っていることでは、私たちと同じだ', '同じは「如」「猶」など。「勝」は「まさる」。'], ['私たちに勝負を挑んでいる', '「勝」を「勝負する」に取りちがえている。ここは比較。']], 0),
+    Q3('「乃放老馬而従之」の「之」が指すものとして、最も適当なものを選べ。', '老馬', [['山', '放して従ったのは馬。「之」は直前の「老馬」を指す。'], ['路', '路を知っているのは馬。従ったのは馬のあと。'], ['衆人', '「之」は従う相手。従うのは衆人のほうで、「之」ではない。']], 3),
+    Q3('この文章から読み取れる主張として、最も適当なものを選べ。', '経験のあるものから素直に学ぶことが大切だ', [['馬は人間より賢い動物だ', '馬と人を比べて優劣を言う文章ではない。経験のあるものから学ぶことを言っている。'], ['道に迷ったら、動物を放すのがよい', '手段の話ではなく、「学ぶ姿勢」が主旨。'], ['山には入らないほうがよい', '山に入ること自体の善悪は述べていない。']], 0)
+  ] },
+{ id: 't19', kind: '文章', title: '毎日十行',
+  bai: ['昔有一士、日読書十行。', '人笑曰、所読甚少。', '士曰、日十行、歳三千六百行。積之十年、則万巻可読。', '十年後、士通百家、人無及者。'],
+  yomi: ['昔、一士有り、日に書十行を読む。', '人笑ひて曰はく、「読む所甚だ少なし」と。', '士曰はく、「日に十行、歳に三千六百行なり。之を積むこと十年なれば、則ち万巻も読むべし」と。', '十年の後、士百家に通じ、人及ぶ者無し。'],
+  yaku: '昔、一人の士（学ぶ人）がいて、毎日書物を十行ずつ読んでいた。人々は笑って「読む量がとても少ない」と言った。士は言った。「毎日十行なら、一年で三千六百行になる。これを十年積み重ねれば、万巻もの書物を読むことができる」と。十年後、士はさまざまな学問に通じ、彼に及ぶ人はいなくなった。',
+  notes: [['日', '毎日'], ['歳', '一年'], ['積', '積み重ねる'], ['万巻', '非常に多くの書物'], ['百家', 'さまざまな学問・思想家'], ['及', 'およぶ、肩を並べる']],
+  tip: '「所読」の「所」は、「読む所（読むもの、読む量）」のように、動詞を名詞にする働きの字。「則」は「〜すれば、そのときは」と結ぶ字。「可」は「〜べし」と読み、ここでは「〜することができる」（可能）。小さな努力を重ねる大切さを言う文章で、数字を使った理屈の運びも読み取りましょう。',
+  qs: [
+    Q3('「所読甚少」の解釈として、最も適当なものを選べ。', '読んでいる量がとても少ない', [['読む場所がとても少ない', '「所」を「場所」と取りちがえている。「読む所」は「読むもの・量」の意味。'], ['読む人がとても少ない', '「所」は人を表さない。ここは読む「量」が少ないという意味。'], ['読むのをとても少なくしてはならない', '禁止の字（勿・莫）はない。人々が士を笑った言葉。']], 0),
+    Q3('「積之十年」の「之」が指すものとして、最も適当なものを選べ。', '日に十行ずつ読むこと', [['万巻の書物', '万巻は結果として出てくるもの。積み重ねるのは日々の十行。'], ['十年という期間', '十年は「積む」期間。「之」は積む対象。'], ['人々の笑い', '笑いは積まれていない。直前の「日十行、歳三千六百行」を受けている。']], 1),
+    Q3('「則万巻可読」の解釈として、最も適当なものを選べ。', '万巻の書物を読むことができる', [['万巻の書物を読まなくてもよい', '「可」は「〜べし」。ここでは可能の意味で、不要の意味ではない。'], ['万巻の書物を読んではならない', '禁止は「不可」の形。「可」だけなら禁止ではない。'], ['万巻の書物を読むべきか迷っている', '迷いの形（疑問）ではない。「則」で、積めばそうなると言い切っている。']], 0),
+    Q3('「人無及者」の解釈として、最も適当なものを選べ。', '彼に及ぶ人はいなかった', [['彼は他の人に及ばなかった', '及ばないのは他の人のほう。「無及者」は「及ぶ者がいない」。'], ['彼に及ぶ者を、人は探さなかった', '「無」は「いない」。「探さない」の意味ではない。'], ['及ぶ者がいても、人は無視した', '「無及者」は及ぶ者がいないこと。いても無視した、ではない。']], 0),
+    Q3('この文章から読み取れる主張として、最も適当なものを選べ。', '少しずつでも続ければ、大きな力になる', [['書物は多く読むほどよい', '士は少しずつ読んだ。量の多さが主張ではない。'], ['人に笑われたらやめるべきだ', '士は笑われても続けた。やめろとは言っていない。'], ['十行しか読めない者は、成功しない', '十行ずつでも、十年続けて成功した。']], 2)
+  ] },
+{ id: 't20', kind: '文章', title: '賢者への問い',
+  bai: ['魏王問賢者曰、誰可為吾師。', '賢者曰、王欲得師、然天下無常師。', '善者吾師也。不善者亦吾師也。', '求師於人、不如自省己過。'],
+  yomi: ['魏王賢者に問ひて曰はく、「誰か吾が師と為るべき」と。', '賢者曰はく、「王師を得んと欲するも、天下に常の師無し。', '善き者は吾が師なり。善からざる者も亦吾が師なり。', '師を人に求むるは、自ら己の過ちを省みるに如かず」と。'],
+  yaku: '魏の王が賢者に尋ねて言った。「だれが私の師になれるだろうか」と。賢者は言った。「王は師を得たいと望まれるが、天下には決まった師などおりません。善い人は私の師です。善くない人もまた私の師です。他人に師を求めるのは、自分で自分の過ちを省みることには及びません」と。',
+  notes: [['魏王', '魏の国の王'], ['賢者', '賢い人'], ['常師', '決まった師'], ['省', 'かえりみる、反省する'], ['過', '過ち']],
+  tip: '「誰可為吾師」は疑問（だれが〜か）。「欲〜」は願望（〜したいと思う）。「A不如B」は比較で、「AはBには及ばない（Bのほうがよい）」。「不善者」は「善からざる者」と読み、「不」は「善」にかかります。返り点が三まで続く文なので、読む順をしっかり追いましょう。',
+  qs: [
+    Q3('「誰可為吾師」の解釈として、最も適当なものを選べ。', 'だれが私の師になれるだろうか', [['だれも私の師になれない', '「誰」は疑問を表す。答えを決めつけず、たずねている。'], ['私はだれの師になるべきか', '「吾師」は「私の師」。師になるのはだれかを問うている。'], ['だれが私を師にするのか', '主客が逆。「吾」は師を求める王自身。']], 0),
+    Q3('「王欲得師」の解釈として、最も適当なものを選べ。', '王は師を得たいと望んでいる', [['王は師を得たので喜んでいる', '「欲」は願望。得たのではなく、得たいと望んでいる。'], ['王は師を得てはならない', '禁止（勿・莫）の形ではない。'], ['王は師を得ることを望まない', '「欲」は「ほっす」。望まないなら「不欲」の形になる。']], 3),
+    Q3('「不善者亦吾師也」の解釈として、最も適当なものを選べ。', '善くない者もまた私の師だ', [['善くない者は私の師ではない', '「亦」は「〜もまた」。前の文の「善者吾師」に並べている。'], ['善い者だけが私の師だ', '「亦」で、善くない者も師だと広げている。'], ['善くない者を、私は師にしない', '否定の「不」は「善」にかかる（善くない）。師にしないという意味ではない。']], 1),
+    Q3('「求師於人、不如自省己過」の解釈として、最も適当なものを選べ。', '人に師を求めるのは、自分の過ちを自ら省みることには及ばない', [['人に師を求めるほうが、自分を省みるよりすぐれている', '「不如」は「及ばない」。比較の大小が逆になっている。'], ['人に師を求めることと、自分を省みることは同じだ', '同じは「如」。「不如」は「及ばない」で、同じではない。'], ['人に師を求めても、自分を省みてもならない', '禁止（勿・莫）の形ではない。比較の「不如」。']], 0),
+    Q3('この文章の趣旨として、最も適当なものを選べ。', '身近な人や自分自身を反省する中に、学びがある', [['王は、賢者以外を師にしてはならない', '本文は「善者も不善者も師になる」と言っている。賢者だけではない。'], ['師は、遠くから探さねばならない', '本文はむしろ身近なところに学びがあるとしている。'], ['善い人にだけ学べば十分だ', '「不善者亦吾師」とあり、善くない人からも学べると言っている。']], 0)
+  ] },
+{ id: 't21', kind: '漢詩', title: '春待ち（自作の練習詩）',
+  bai: ['山寒花未発', '風暖鳥先啼', '独歩芳草径', '帰路夕陽低'],
+  yomi: ['山 寒くして 花 未だ発かず', '風 暖かにして 鳥 先づ啼く', '独り歩む 芳草の径', '帰路 夕陽 低る'],
+  yaku: '山はまだ寒くて、花はまだ咲いていない。風はあたたかく、鳥が先に鳴いている。ひとり、香り立つ草の小道を歩く。帰り道には、夕日が低く沈もうとしている。',
+  notes: [['発', '花が咲く'], ['先', 'まっさきに、先に'], ['芳草', '香りのよい草'], ['径', '小道'], ['夕陽', '夕日']],
+  tip: '五言絶句。第2・4句の句末で韻を踏む（啼・低）。第1句と第2句は対句になっている（山↔風、寒↔暖、花↔鳥、未↔先、発↔啼）。「花未発」の「未」は再読文字で、「未だ〜ず」。※この詩は練習用に作ったもので、有名な詩ではない。',
+  qs: [
+    Q3('第2句末の「啼」と韻を踏んでいる字として、最も適当なものを選べ。', '低', [['発', '第1句末。五言絶句では、第1句は韻を踏まないことが多い。'], ['先', '第2句の途中の字。韻は句末で踏む。'], ['径', '第3句末。第3句は踏まない句。']], 3),
+    Q3('「花未発」の解釈として、最も適当なものを選べ。', '花はまだ咲いていない', [['花はすでに咲いた', '「未」は「まだ〜ない」。意味が逆になっている。'], ['花はこれから必ず咲くだろう', '「将」「当」の意味ではない。「未〜」は「まだ〜ない」という否定。'], ['花は咲いてはならない', '禁止の字（勿・莫）ではない。']], 1),
+    Q3('第1句「山寒花未発」と対になっている語の組み合わせとして、最も適当なものを選べ。', '山↔風、寒↔暖', [['山↔鳥、寒↔先', '「鳥」は花と対。「寒」と対になるのは「暖」。'], ['花↔風、未↔暖', '「花」と対になるのは「鳥」。「風」は「山」と対。'], ['発↔先、啼↔暖', '「発」と対になるのは「啼」。「先」は「未」と対。']], 0),
+    Q3('この詩の季節と気持ちとして、最も適当なものを選べ。', '春のはじめ、まだ寒さの残る中に春の気配を感じる気持ち', [['夏の盛り、暑さに疲れた気持ち', '「寒」「暖」「花未発」とあり、季節は夏ではない。'], ['秋の終わり、枯れ草を悲しむ気持ち', '「芳草」は香りのよい草。枯れ草ではない。'], ['冬の夜、雪を恐れる気持ち', '「風暖」「鳥先啼」とあり、春の気配が詠まれている。']], 2)
+  ] },
+{ id: 't22', kind: '漢詩', title: '雨あがり（自作の練習詩）',
+  bai: ['雨過西池暑気収', '荷風徐送晩涼幽', '蝉声忽使遠人思', '斜陽立尽独倚楼'],
+  yomi: ['雨 西池を過ぎて 暑気 収まり', '荷風 徐ろに送る 晩涼の幽かなるを', '蝉声 忽ち 遠人をして思はしむ', '斜陽 立ち尽くして 独り楼に倚る'],
+  yaku: '雨が西の池を通り過ぎて、暑さがおさまった。蓮の葉をわたる風が、ゆっくりと夕方のしずかな涼しさを送ってくれる。蝉の声が、ふいに遠くにいる人（故郷を離れた人）に故郷を思わせる。夕日の中、立ち尽くして、ひとり高殿の手すりにもたれている。',
+  notes: [['暑気', '暑さ'], ['荷風', '蓮の葉をわたる風'], ['徐', 'ゆっくり'], ['晩涼', '夕方の涼しさ'], ['遠人', '遠く離れた人'], ['倚楼', '高殿（楼）の手すりによりかかる']],
+  tip: '七言絶句。第1・2・4句の句末で韻を踏む（収・幽・楼）。第3句末の「思」は踏まない。「使A思」は使役で、「Aをして思はしむ」（Aに思わせる）。「使」は返り点で下から読み返すので、使役の読む順をていねいに追いましょう。※この詩は練習用に作ったもので、有名な詩ではない。',
+  qs: [
+    Q3('この詩で韻を踏んでいない句末の字として、最も適当なものを選べ。', '思', [['収', '第1句末。七言絶句では第1句末は韻を踏むことが多く、ここも踏んでいる。'], ['幽', '第2句末。韻を踏んでいる。'], ['楼', '第4句末。韻を踏んでいる。']], 0),
+    Q3('「蝉声忽使遠人思」の解釈として、最も適当なものを選べ。', '蝉の声が、遠くにいる人に故郷を思わせる', [['蝉の声を使って、遠くの人を思う', '「使」を「つかう」と取りちがえている。ここは使役（〜させる）。'], ['遠くの人が蝉に命じて、思いを止める', '命じる主体が逆になっている。使役の主語は「蝉声」。'], ['蝉の声が、遠くの人の思いをすぐに消した', '「思」は「思う」。消すという意味ではない。']], 1),
+    Q3('「斜陽立尽独倚楼」から読み取れる様子として、最も適当なものを選べ。', '夕日の中、ひとりで物思いにふけっている様子', [['夕日の中、大勢で宴会をしている様子', '「独」とあり、ひとり。宴会は詠まれていない。'], ['朝日の中、元気に歩き出す様子', '「斜陽」は夕日。朝ではない。'], ['夕日の中、仲間を待って楽しんでいる様子', '仲間を待つ描写はない。「立尽」「独倚」から、物思いの様子が読み取れる。']], 0),
+    Q3('この詩の情景に合う心情として、最も適当なものを選べ。', '涼しさの中で、遠い故郷をなつかしむ気持ち', [['暑さがやまず、いらだつ気持ち', '「暑気収」「晩涼」とあり、暑さはおさまっている。'], ['蝉の声をうるさく感じる気持ち', '蝉の声は「遠人思」を引き起こすもの。うるささは詠まれていない。'], ['雨の続くことを嘆く気持ち', '雨は「過ぎて」暑さを収めた。嘆いてはいない。']], 2)
+  ] }
+];
+
+T.push.apply(T, T5);
+var KT4B = {
+t17: [
+ ['昔有{二}商人{一}、', '名曰信。'],
+ ['一日、', '客買{レ}布、', '約{二}明日来取{一レ}布。'],
+ ['夜、', '他客来、', '出{二}倍価{一}求{レ}之。'],
+ ['商人曰、', '既約矣~。', '不{三}可{二}復売{一}。'],
+ ['客曰、', '何固守{二}一約{一}乎~。'],
+ ['商人曰、', '信者商之本也。', '失{レ}信則無{レ}客。'],
+ ['後客皆信{レ}之、', '商大富。']],
+t18: [
+ ['昔有{二}数人{一}、', '入{レ}山迷{レ}路。'],
+ ['日暮不{レ}得{レ}出。'],
+ ['一人曰、', '老馬嘗行{二}此路{一}。', '其知{レ}路、', '勝{二}吾輩{一}。'],
+ ['乃放{二}老馬{一}而~従{レ}之。', '果得{レ}出。'],
+ ['衆嘆曰、', '馬尚知{レ}路、', '況人乎。']],
+t19: [
+ ['昔有{二}一士{一}、', '日読{二}書十行{一}。'],
+ ['人笑曰、', '所{レ}読甚少。'],
+ ['士曰、', '日十行、', '歳三千六百行。', '積{レ}之十年、', '則万巻可{レ}読。'],
+ ['十年後、', '士通{二}百家{一}、', '人無{二}及者{一}。']],
+t20: [
+ ['魏王問{二}賢者{一}曰、', '誰可{三}為{二}吾師{一}。'],
+ ['賢者曰、', '王欲{二}得{一レ}師、', '然天下無{二}常師{一}。'],
+ ['善者吾師也。', '不{レ}善者亦吾師也。'],
+ ['求{二}師於~人{一}、', '不{レ}如{三}自省{二}己過{一}。']],
+t21: [
+ ['山寒花未*{レ}発'],
+ ['風暖鳥先啼'],
+ ['独歩{二}芳草径{一}'],
+ ['帰路夕陽低']],
+t22: [
+ ['雨過{二}西池{一}暑気収'],
+ ['荷風徐送{二}晩涼幽{一}'],
+ ['蝉声忽使{二}遠人思{一}'],
+ ['斜陽立尽独倚{レ}楼']]
+};
+
+
+var KT4A = {
+t11: [
+ ['昔有{レ}人、', '得{二}良馬{一}、', '不{レ}識{二}其良{一}。'],
+ ['遂使{二}耕{一レ}田、', '馬日羸痩。'],
+ ['一日、', '善相{レ}馬者過{二}其門{一}、', '見{レ}之驚曰、', '此千里馬也。', '何使{二}耕{一レ}田乎~。'],
+ ['其人大悔、', '乃易{二}其飼{一}。', '数月馬復壮。', '一日行{二}千里{一}。'],
+ ['其人嘆曰、', '馬非{レ}不{レ}良、', '吾不{レ}識{レ}之耳。']],
+t12: [
+ ['水無{二}常形{一}、', '随{レ}器而~変。'],
+ ['人無{二}常性{一}、', '随{レ}友而~変。'],
+ ['故君子慎{二}交友{一}、', '猶*{三}舟人慎{二}風浪{一}也。']],
+t13: [
+ ['昔有{二}牧童{一}、', '好{二}戯{一レ}人。'],
+ ['毎登{レ}丘、', '呼曰、', '狼来。'],
+ ['村人驚走、', '牧童大笑。'],
+ ['数日後、', '狼真至。'],
+ ['牧童呼{レ}救。'],
+ ['村人曰、', '彼又戯耳。', '不{二}往救{一}。'],
+ ['羊尽為{二}狼所{一レ}食。'],
+ ['牧童後悔無{レ}及。']],
+t14: [
+ ['井中有{レ}蛙、', '自謂{レ}楽。'],
+ ['有{二}海鼈{一}過{レ}之、'],
+ ['蛙語{レ}之曰、', '子来観{二}吾楽{一}。'],
+ ['鼈曰、', '海広無{二}涯際{一}。', '井安足{レ}比乎~。'],
+ ['蛙大驚、', '不{レ}能{レ}言。']],
+t15: [
+ ['夜深霜露白'],
+ ['客枕思悠悠'],
+ ['鐘断月将*{レ}落'],
+ ['寒蛩鳴不{レ}休']],
+t16: [
+ ['晩来山雨洗{二}新秋{一}'],
+ ['一径入{レ}雲溪水流'],
+ ['莫{三}笑{二}樵夫衣帯薄{一}'],
+ ['白頭猶自上{二}高丘{一}']]
+};
+
+
+// 記法: 字のあとに  *=再読文字  ~=置き字（読まない）  {返り点}  -=次の字と熟語でつなぐ
+// 各行は「節=読む順」の配列。節の終わりに 、 または 。 を付ける。
+const KT = {
+t01: [
+ ['昔有{二}農夫{一}。'],
+ ['憂{二}苗之不{一レ}長。'],
+ ['乃就{レ}田抜{レ}苗以助{二}其長{一}。'],
+ ['帰謂{二}家人{一}曰、', '今日疲矣~。', '予助{二}苗長{一}矣~。'],
+ ['其子趨往視{レ}之。'],
+ ['苗尽枯矣~。']],
+t02: [
+ ['有{二}学{レ}射者{一}。'],
+ ['三年不{レ}能{レ}中{レ}的。'],
+ ['怒而~折{レ}弓。'],
+ ['師曰、', '弓豈有{レ}罪乎~。'],
+ ['汝心不{レ}静耳。']],
+t03: [
+ ['人之過、', '人易{レ}知而~己難{レ}知。'],
+ ['故君子日省{二}己身{一}、'],
+ ['不{二}敢先責{一レ}人。']],
+t04: [
+ ['山静鳥声遠'],
+ ['雲淡水声幽'],
+ ['一杯酔{二}花下{一}'],
+ ['都忘{二}世間愁{一}']],
+t05: [
+ ['春風吹{レ}柳緑如{レ}糸'],
+ ['燕子来時花満{レ}枝'],
+ ['少年豈無{二}遠志{一}乎~'],
+ ['帰来更読{二}古人詩{一}']],
+t06: [
+ ['昔有{二}良医{一}、', '名曰{レ}仲。'],
+ ['治{レ}病多{レ}愈、', '人皆称{レ}之。'],
+ ['或問曰、', '子之術何其精也。', '必有{二}奇方{一}。'],
+ ['医曰、', '吾無{二}奇術{一}。', '唯聴{二}病者之言{一}、', '尽{二}其詳{一}而~後下{レ}薬耳。', '他医急{二}於~薬{一}、', '不{レ}聴{二}其言{一}、', '故多{レ}誤。'],
+ ['問者曰、', '聴{レ}言、', '人皆能{レ}之。', '何独子精也。'],
+ ['医曰、', '人能{レ}之而~不{レ}行。', '此所-以{二}異{一}也。']],
+t07: [
+ ['昔有{レ}王好{レ}鷹。'],
+ ['使{二}臣養{一レ}之。'],
+ ['鷹日食{レ}肉、', '臣家無{レ}粟、', '妻子飢。'],
+ ['臣窃謂{二}同僚{一}曰、', '吾見{二}鷹肥{一}、', '妻子痩。', '人而~不{レ}如{レ}鷹乎~。'],
+ ['同僚以告{レ}王。'],
+ ['王召{レ}臣曰、', '若何不{レ}言。'],
+ ['臣曰、', '鷹為{二}王所{一レ}愛。', '臣不{二}敢言{一}。'],
+ ['王嘆曰、', '人而~不{レ}如{レ}鷹、', '此吾過也。'],
+ ['乃賜{二}臣粟{一}、', '使{二}家人不{一レ}飢。']],
+t08: [
+ ['学者貴{レ}行、', '不{レ}貴{レ}言。'],
+ ['若能言而~不{レ}能{レ}行、', '猶*{レ}無{レ}学也。'],
+ ['今人多{レ}言而~少{レ}行。'],
+ ['昔有{レ}人、', '読{レ}書万巻、', '而~不{レ}知{レ}孝{二}其親{一}。'],
+ ['人謂{レ}之曰、', '子博矣~。', '然読{レ}書何為。'],
+ ['其人無{二}以対{一}。'],
+ ['夫書所-以{三}教{二}人行{一}也。'],
+ ['苟不{レ}行、', '雖{二}多読{一}、', '亦何益。'],
+ ['入{二}宝山{一}而~空手帰、', '猶*{レ}無{レ}獲也。'],
+ ['故君子学而~必行{レ}之、', '然後謂{二}之学{一}。']],
+t09: [
+ ['昔有{二}隠者{一}、', '居{二}山中{一}、', '種{レ}菊数畝。'],
+ ['客問曰、', '子何不{レ}種{レ}粟。'],
+ ['隠者笑曰、', '粟可{二}以養{一レ}身、', '不{レ}可{二}以養{一レ}心。', '吾見{二}菊開{一}、', '則心自静。', '心静則身亦安。', '是吾所-以{二}種{一レ}菊也。'],
+ ['客曰、', '然則子独楽耳。', '於{レ}世何益。'],
+ ['隠者曰、', '不{レ}然。', '人皆逐{レ}利而~苦、', '吾不{レ}逐{レ}利而~楽。', '使{三}人知{二}利之不{一レ}可{レ}恃、', '則亦有{三}益{二}於~世{一}矣~。', '且吾未*{三}嘗求{二}人之知{一}、', '人自来問。'],
+ ['客曰、', '利者人所{レ}欲也、', '豈可{レ}棄乎~。'],
+ ['隠者曰、', '非{レ}棄{レ}之也。', '取{レ}之有{レ}道、', '須*{二}知{レ}足而~止{一}耳。', '若貪而~不{レ}止、', '則利反為{レ}害。'],
+ ['客乃服、', '願留而~学焉~。'],
+ ['隠者曰、', '学者非{三}留{二}於~我{一}也。', '帰而~種{二}其心之菊{一}、', '可也。']],
+t10: [
+ ['昔魏有{二}良将{一}、', '名曰{レ}堅。'],
+ ['将*{二}出征{一}、', '宴{二}群臣{一}。'],
+ ['有{二}一士{一}、', '年少而~貧、', '衣敝不{レ}整。', '群臣皆笑{レ}之。', '将独礼{レ}焉、', '問曰、', '子欲{二}何言{一}。'],
+ ['士曰、', '臣有{二}一言{一}、', '願陳{レ}之。'],
+ ['将曰、', '吾軍糧不{レ}足、', '士卒疲矣~。', '若戦、', '恐不{レ}勝。'],
+ ['士曰、', '不{レ}然。', '糧雖{レ}少、', '猶可{レ}勝也。', '昔善戦者、', '不{レ}貪{レ}多、', '而~先去{二}其害{一}。', '今軍中有{二}貪者{一}、', '取{レ}糧過{レ}量。', '此害也。', '去{レ}之、', '糧足矣~。'],
+ ['将曰、', '貪者多{二}功臣{一}。', '罰{レ}之、', '恐失{二}衆心{一}。'],
+ ['士曰、', '与{三}其養{二}貪者{一}、', '寧罰{レ}之以安{二}軍心{一}。'],
+ ['将従{二}其言{一}、', '罰{二}貪者{一}。', '軍心大安、', '遂勝。'],
+ ['後将問{二}士姓名{一}。', '士曰、', '吾貧士耳。', '安足{二}言{一レ}名。', '将嘆曰、', '士不{三}可{二}以{レ}貌取{一}也。', '欲{二}用{一レ}之、', '士辞而~去。']]
+};
+
+function parseClause(m) {
+  // m: 'markup' (句読点つき)。戻り値: {chars, marks, skip, re, link, punct}
+  const out = { chars: [], marks: [], skip: [], re: [], link: [], punct: '' };
+  const a = Array.from(m);
+  for (let i = 0; i < a.length; i++) {
+    const c = a[i];
+    if (c === '、' || c === '。') { out.punct = c; continue; }
+    const idx = out.chars.length;
+    out.chars.push(c); out.marks.push(''); out.link.push(false);
+    while (i + 1 < a.length) {
+      const n = a[i + 1];
+      if (n === '*') { out.re.push(idx); i++; }
+      else if (n === '~') { out.skip.push(idx); i++; }
+      else if (n === '-') { out.link[idx] = true; i++; }
+      else if (n === '{') { const j = a.indexOf('}', i + 1); out.marks[idx] = a.slice(i + 2, j).join(''); i = j; }
+      else break;
+    }
+  }
+  return out;
+}
+
+Object.assign(KT, KT4A);
+Object.assign(KT, KT4B);
+T.forEach(function (t) {
+  t.kt = KT[t.id];
+  t.bai = t.kt.map(function (line) {
+    return line.map(function (m) { var c = parseClause(m); return c.chars.join('') + c.punct; }).join('');
+  });
+});
+
+const GROUPS4 = ['副詞・接続', '多義語・助字', '現代語とちがう語'];
+const VW = [];
+function V(group, w, bai, yomi, right, wrong, imi, tip) {
+  const i = VW.length, pos = (i * 5 + (i >> 1)) % 4;
+  const opts = wrong.map(function (x) { return x[0]; }), why = wrong.map(function (x) { return x[1]; });
+  opts.splice(pos, 0, right); why.splice(pos, 0, '');
+  VW.push({ id: 'v' + (i < 9 ? '0' : '') + (i + 1), group: group, w: w, bai: bai, yomi: yomi, ans: pos, opts: opts, why: why, imi: imi, tip: tip });
+}
+const G1 = '副詞・接続', G2 = '多義語・助字', G3 = '現代語とちがう語';
+V(G1, '乃', '〔乃〕就田', '乃ち田に就く。', 'そこで', [['しかし', '逆接を表すのは「然れども」「而」など。乃は、前の内容を受けて次に進む字。'], ['ついに', '「ついに」は遂・竟・卒など。乃は「そこで」「なんと（意外にも）」。'], ['もしも', '仮定は若・如・苟など。']], 'そこで／なんと（意外にも）', '乃は「すなはち」と読む。基本は「そこで」。意外な気持ちをこめて「なんと」「ようやく」の意味になることもある。');
+V(G1, '遂', '〔遂〕勝', '遂に勝つ。', 'とうとう、ついに', [['すぐに', '「すぐに」は即・輒など。遂は、結果にいたる「ついに」。'], ['かつて', '「かつて」は嘗。'], ['もしも', '仮定は若・如・苟など。']], 'ついに／そのまま', '遂は「つひに」。そのまま進んで、とうとう結果になる。');
+V(G1, '嘗', '吾〔嘗〕見之', '吾嘗て之を見る。', 'かつて、以前に', [['これから', '「これから」は将・且。嘗は過去のこと。'], ['いつも', '「いつも」は常・毎。'], ['すぐに', '「すぐに」は即・輒。']], 'かつて／（動詞なら）ためす', '嘗は「かつて」。「未嘗〜」は「未だ嘗て〜ず」（これまで一度も〜ない）。');
+V(G1, '蓋', '〔蓋〕有故也', '蓋し故有るなり。', 'おそらく、思うに', [['すべて', '「すべて」は皆・悉・尽。'], ['かならず', '「かならず」は必。蓋は推量や理由づけを表す。'], ['もしも', '仮定は若・如・苟など。']], 'おそらく／思うに', '蓋は「けだし」。文頭で、「思うに」「おそらく」と、推量や理由づけを表す。');
+V(G1, '亦', '子〔亦〕知之', '子も亦た之を知る。', '〜もまた', [['それでもなお', '「それでもなお」は猶・尚。'], ['いつも', '「いつも」は常・毎。'], ['ついに', '「ついに」は遂。']], '〜もまた', '亦は「また」。「不亦〜乎」は「亦た〜ずや」（なんと〜ではないか）という詠嘆の形で出る。');
+V(G1, '復', '不〔復〕来', '復た来たらず。', '二度と（〜ない）', [['もとにもどって', '「復」は動詞で「もどる」の意味もあるが、「不復〜」は「復た〜ず」（二度と〜ない）の形。'], ['いつも', '「いつも」は常・毎。'], ['すぐに', '「すぐに」は即・輒。']], 'また、ふたたび／（動詞）もどる', '「不復〜」は「復た〜ず」（二度と〜しない）。復は「また」と読む。');
+V(G1, '毎', '〔毎〕見之', '毎に之を見る。', 'そのたびに', [['ときどき', '「ときどき」は時・或。毎は「そのたびに」。'], ['一度だけ', '毎は、同じことが繰り返されることを表す。'], ['すぐに', '「すぐに」は即・輒。']], 'ごとに／いつも', '毎は「ごとに」。同じことが繰り返される。');
+V(G1, '或', '〔或〕曰', '或ひと曰はく。', 'ある人', [['もしも', '仮定は若・如・苟など。'], ['すべての人', '「すべて」は皆。或は、はっきりしない一部を指す。'], ['おそらく', '推量は蓋・恐。']], 'ある人／あるいは／ある時', '或は、はっきりしないものを指す。文頭の「或曰」は「ある人が言った」。');
+V(G1, '頗', '〔頗〕知之', '頗る之を知る。', 'かなり、おおいに', [['少しも', '打ち消しは不・無。'], ['たぶん', '推量は蓋・恐。'], ['ただ', '限定は唯・但。']], 'すこぶる、かなり', '頗は「すこぶる」。程度が大きいことを表す。');
+V(G1, '殆', '〔殆〕死', '殆ど死せんとす。', 'もう少しで、あやうく', [['まったく', '「まったく」は全・悉。殆は「あやうい」が元の意味。'], ['ゆっくり', '「ゆっくり」は漸・徐。'], ['ときどき', '「ときどき」は時・或。']], 'ほとんど／あやうい', '殆は「ほとんど」と読み、「あやうく〜しそうだ」の意味。「危ふし」という意味もある。');
+V(G1, '輒', '〔輒〕怒', '輒ち怒る。', 'そのたびにすぐ', [['まれに', '「まれに」は稀。輒は「そのたびに」。'], ['ふたたび', '「ふたたび」は復・再。'], ['しばらく', '「しばらく」は暫。']], 'すなはち（そのたびに）', '輒は「すなはち」。「そのたびごとにすぐ」の意味。');
+V(G1, '固', '〔固〕知之', '固より之を知る。', 'もとより、もちろん', [['ついに', '「ついに」は遂。'], ['たまたま', '「たまたま」は適・偶。'], ['かたくなに', '「かたし」の意味もあるが、「固より」は「もとから」。']], 'もとより／かたい', '固は「もとより」。「かたし」「かたく」の意味もあるので、前後で判断する。');
+V(G1, '益', '〔益〕懼', '益ます懼る。', 'ますます', [['少し', '「少し」は少・稍。'], ['かえって', '「かえって」は反。'], ['ただちに', '「ただちに」は即。']], 'ますます／役に立つ', '益・愈は「ますます」。度合いが増すことを表す。名詞の「益」は「役に立つこと」。');
+V(G1, '既', '〔既〕至', '既に至る。', 'すでに', [['まだ', '「まだ」は未。'], ['まもなく', '「まもなく」は俄。'], ['ふたたび', '「ふたたび」は復。']], 'すでに', '既は「すでに」。終わったことを表す。');
+V(G1, '漸', '〔漸〕近', '漸く近づく。', 'だんだん、しだいに', [['やっと、ついに', '現代語の「ようやく」とはちがい、漸は「しだいに」の意味。'], ['すぐに', '「すぐに」は即・輒。'], ['ときどき', '「ときどき」は時・或。']], 'ようやく（しだいに）', '漸は「ようやく」と読むが、意味は「だんだん」。現代語の「やっと」とちがうので注意。');
+V(G1, '俄', '〔俄〕而雨降', '俄かにして雨降る。', 'まもなく、突然', [['ゆっくり', '「ゆっくり」は漸・徐。'], ['かつて', '「かつて」は嘗。'], ['ずっと', '「ずっと」は常・恒。']], 'にはかに（まもなく・突然）', '俄は「にはかに」。「俄而」は「俄かにして」と読み、「まもなく」「突然」の意味。');
+V(G2, '為', '〔為〕人謀', '人の為に謀る。', '〜のために', [['〜となる', '「為A」だけなら「Aと為る」。ここは「為A V」で、「AのためにVする」。'], ['〜をつくる', '「つくる」の意味もあるが、ここは目的を表す「ために」。'], ['〜である', '断定は也。']], 'ために／なる／なす／〜と為す', '為は意味が多い。「為A V」は「AのためにVす」、「為A」は「Aと為る」、「為A所V」は受身。');
+V(G2, '為', '〔為〕君子', '君子と為る。', 'なる', [['〜のために', '目的を表す「ために」は「為A V」の形。ここは「為A」だけで、「Aとなる」。'], ['つくる', '「つくる」の意味もあるが、ここは身分や状態に「なる」。'], ['〜される', '受身は「為A所V」の形。']], 'なる／なす／ために', '為は「なる」「なす」「ために」など、意味が多い。前後の形で判断する。');
+V(G2, '以', '〔以〕刀斬之', '刀を以て之を斬る。', '〜で、〜を使って', [['〜から', '「〜から」は自・従・由。'], ['〜のあとで', '「〜のあとで」は後・而後。'], ['〜よりも', '比較は於・如。']], 'もって（手段・理由・目的）', '「以A V」は「Aを以てVす」。手段・方法・理由を表す。');
+V(G2, '与', '〔与〕友遊', '友と遊ぶ。', '〜と、いっしょに', [['〜よりも', '「与其A寧B」の与は「よりは」。ここは「Aと」。'], ['〜に与える', '「与ふ」は動詞。ここは「Aと」（いっしょに）。'], ['〜か（疑問）', '文末の「与」は疑問・詠嘆（や・か）。']], 'と・ともに／あたふ／か（文末）', '与は、「Aと」（いっしょに）、「あたふ」（与える）、文末の「や・か」など、意味が多い。');
+V(G2, '自', '〔自〕京来', '京より来たる。', '〜から', [['みずから', '「みづから」の意味もあるが、「自A V」の自は起点（〜から）。'], ['自然に', '「おのづから」の意味もあるが、場所が続くときは「〜から」。'], ['〜のように', '比況は如・若。']], 'より／みづから／おのづから', '自・従・由は、場所や時が続くと「より」（〜から）。「みづから」「おのづから」の意味もある。');
+V(G2, '従', '〔従〕山下', '山より下る。', '〜から', [['〜にしたがう', '「したがふ」の意味もあるが、場所が続くときは「〜から」。'], ['〜のようだ', '比況は如・若。'], ['〜といっしょに', '「いっしょに」は与。']], 'より／したがふ', '自・従・由は、どれも「より」（〜から）と読む。起点を表す。');
+V(G2, '如', '不〔如〕帰', '帰るに如かず。', '及ぶ（不如＝及ばない・〜がよい）', [['〜のようだ', '「ごとし」は別の用法。「不如」「莫如」では「しかず」（及ばない）。'], ['もし', '仮定の「如」は、「如し〜ば」の形。ここは不如。'], ['行く', '「ゆく」の意味もあるが、不如の形では使わない。']], 'ごとし／しく（及ぶ）／もし', '如は「ごとし」「しく」「もし」と読み分ける。「不如A」は「Aに如かず」（Aのほうがよい）。');
+V(G2, '若', '〔若〕有過', '若し過有らば。', 'もし', [['〜のようだ', '「ごとし」の用法もあるが、あとに「ば」が続くときは仮定。'], ['おまえ', '「なんぢ」の用法もあるが、仮定の文では「もし」。'], ['〜に及ぶ', '「しく」の意味は、不若の形のとき。']], 'もし／ごとし／なんぢ', '若は「もし」「ごとし」「なんぢ」と読み分ける。「若し〜ば」は仮定。');
+V(G2, '之', '〔之〕斉', '斉に之く。', 'ゆく', [['これ', '「これ」は動詞の目的語のとき。ここは地名の前の動詞。'], ['〜の', '「の」は名詞と名詞のあいだ。'], ['この', '指示は此・是。']], 'これ／の／ゆく', '之は「これ」「の」「ゆく」の三つが大事。「之＋場所」なら「ゆく」。');
+V(G2, '所', '〔所〕愛', '愛する所。', '〜するもの、〜すること', [['場所', '「ところ」と読むが、動詞の前の所は「〜するもの・こと」。'], ['理由', '理由は所以。'], ['手段', '手段は所以・以。']], 'ところ（もの・こと）', '「所V」は「Vする所」（Vするもの・こと）。受身の「為A所V」でも使う。');
+V(G2, '見', '〔見〕欺', '欺かる。', '〜される', [['見る', '見は、動詞の前につくと受身を表す。'], ['現れる', '「あらはる」の意味もあるが、ここは受身。'], ['会う', '「まみゆ」の意味もあるが、ここは受身。']], 'みる／あらはる／（動詞の前で）される', '「見V」は「Vらる」（〜される）。被・為も受身を表す。');
+V(G2, '可', '〔可〕行', '行くべし。', '〜できる、〜してよい', [['〜してはならない', '禁止は勿・莫・不可。'], ['〜しにくい', '困難は難。'], ['〜だそうだ', '伝聞の意味はない。']], 'べし（できる・してよい・するのがよい）', '可は「べし」。可能・許可・適当を表す。「不可」は禁止か不可能。');
+V(G2, '得', '〔得〕行', '行くを得。', '〜できる', [['手に入れる', '「うる」は動詞の用法。動詞の前の得は「できる」。'], ['成功する', '成功の意味はない。'], ['〜してしまう', '完了の意味ではない。']], 'うる（手に入れる）／（動詞の前で）できる', '得は動詞の前に置くと「〜するを得」（できる）。「不得」は「得ず」（できない）。');
+V(G2, '足', '〔足〕信', '信ずるに足る。', '〜するに十分だ、〜する価値がある', [['あし', '名詞では「あし」だが、動詞の前では「〜するに足る」。'], ['〜するには不足だ', '不足は不足。'], ['〜をつけくわえる', '「足す」の意味ではない。']], 'たる（十分だ・価値がある）／あし', '足は動詞の前で「〜するに足る」。「不足」は「足らず」。');
+V(G2, '能', '〔能〕言', '能く言ふ。', 'うまく〜できる', [['才能のある人', '名詞の「才能」ではない。動詞の前で「よく〜する」。'], ['〜してはならない', '禁止は勿・莫。'], ['〜するはずがない', '反語・推量ではない。']], 'よく（できる）', '能は動詞の前で「能く〜す」（〜できる）。「不能V」は「Vすること能はず」。');
+V(G2, '敢', '不〔敢〕言', '敢へて言はず。', '思い切って、おしきって', [['うっかり', '敢は、思い切って行うこと。うっかりではない。'], ['すぐに', '「すぐに」は即・輒。'], ['いやいや', '敢にその意味はない。']], 'あへて（思い切って）', '「不敢〜」は「敢へて〜ず」（思い切っては〜しない）。「不能」（できない）とはちがう。');
+V(G2, '道', '莫〔道〕少年無志', '道ふ莫かれ、少年志無しと。', 'いう', [['みち', '名詞の「みち」ではなく、動詞の「いふ」。'], ['みちびく', '「みちびく」は導。'], ['おこなう', '「おこなう」の意味はない。']], 'いふ／みち', '道は動詞で「いふ」。「莫道〜」は「〜と道ふ莫かれ」（〜と言うな）。');
+V(G2, '聞', '名〔聞〕天下', '名天下に聞こゆ。', '知られる、評判になる', [['聞く', '「きく」の意味もあるが、ここは「名」が主語なので「聞こゆ」（知られる）。'], ['たずねる', '「たずねる」は問。'], ['かぐ', '「かぐ」は嗅。']], 'きく／きこゆ（知られる）', '聞は、「きく」と「きこゆ」（知られる）がある。主語が人かどうかで判断する。');
+V(G2, '過', '〔過〕市', '市を過ぐ。', 'とおりすぎる', [['あやまち', '名詞の「あやまち」ではなく、動詞。'], ['度をこえる', '「過ぐ」には度をこえる意味もあるが、場所を「過ぐ」は通りすぎる。'], ['とがめる', '「とがめる」は責・咎。']], 'すぐ（通る・こえる）／あやまち', '過は、動詞では「すぐ」（通りすぎる・度をこえる）、名詞では「あやまち」。');
+V(G3, '故人', '遇〔故人〕', '故人に遇ふ。', '古くからの友人', [['亡くなった人', '現代語の意味。漢文の「故人」は旧友。'], ['わざとやる人', '「故意」の意味ではない。'], ['理由のある人', '「故」に理由の意味はあるが、「故人」では旧友。']], '旧友（亡くなった人ではない）', '「故人」は漢文では旧友。現代語の「亡くなった人」とちがう。');
+V(G3, '人間', '〔人間〕有変', '人間に変有り。', '世の中', [['人類、ヒト', '現代語の意味。漢文の「人間」は「じんかん」で、世の中。'], ['人と人の争い', '争いの意味はない。'], ['人の本心', '本心の意味はない。']], '世の中（じんかん）', '「人間」は「じんかん」と読み、世の中・世間の意味。現代語の「にんげん」ではない。');
+V(G3, '丈夫', '〔丈夫〕志四方', '丈夫は四方に志す。', '一人前の立派な男', [['体がじょうぶな人', '現代語の「丈夫」と取りちがえている。'], ['年をとった人', '老人は老・耆。'], ['背の高い人', '背の高さの意味はない。']], '一人前の男（「じょうふ」）', '「丈夫」は「じょうふ」と読み、一人前の男子。現代語の「丈夫（じょうぶ）」とちがう。');
+V(G3, '勉強', '〔勉強〕学', '勉強して学ぶ。', '無理をしてでも努める', [['学校の勉強をする', '現代語の意味。漢文の「勉強」は、つとめはげむこと。'], ['ゆっくり楽しむ', '「勉強」には楽しむ意味はない。'], ['しかたなく行う', '「しかたなく」の意味はない。']], 'つとめはげむ（無理をしても）', '「勉強」は、無理をしてでもつとめること。現代語の「勉強」より意味が広い。');
+V(G3, '先生', '〔先生〕来', '先生来たる。', '年上の人、目上の人（敬称）', [['学校の教師', '現代語の意味。漢文では、年長者や学徳のある人への敬称。'], ['医者', '医者の意味ではない。'], ['学生', '「学生」は逆の意味。']], '年長者・目上の人（敬称）', '「先生」は、先に生まれた人、つまり年長者や学徳のある人への敬称。教師だけではない。');
+V(G3, '愛', '〔愛〕其羽', '其の羽を愛しむ。', 'おしむ、大切にする', [['恋する', '恋愛の意味ではない。「愛」は「おしむ」「大切にする」。'], ['にくむ', '「にくむ」は憎。'], ['ほめる', '「ほめる」は賞・称。']], 'めづ・おしむ（大切にする）', '愛は、「かわいがる」「おしむ」。恋愛の意味とは限らない。');
+V(G3, '白', '臣〔白〕王', '臣、王に白す。', '申し上げる', [['白くする', '色の意味ではなく、動詞の「まうす」。'], ['はっきりさせる', '「明らかにする」の意味もあるが、「A白B」は目上に申し上げる。'], ['かがやく', '「かがやく」は輝・曜。']], 'まうす（申し上げる）／しろい', '白は、目上の人に「申し上げる」意味もある。「白」＝色とは限らない。');
+V(G3, '遺', '〔遺〕之金', '之に金を遺る。', 'おくる、あたえる', [['わすれる', '「わすれる」の意味ではない。'], ['のこす', '「のこす」の意味もあるが、「AにBを遺る」の形ではおくる。'], ['うしなう', '「うしなう」は失・亡。']], 'のこす／おくる／わすれる', '遺は、「のこす」「おくる」「わすれる」の意味がある。「A に B を遺る」はおくる。');
+V(G3, '怪', '〔怪〕之', '之を怪しむ。', 'ふしぎに思う、あやしむ', [['おばけ', '名詞の「おばけ」ではなく、動詞。'], ['おそれる', '「おそれる」は恐・懼。'], ['にくむ', '「にくむ」は憎。']], 'あやしむ（ふしぎに思う）', '怪は動詞で「あやしむ」（ふしぎに思う）。名詞では「あやしいもの」。');
+
+const GROUP_OF_OLD = { shieki: '使役', ukemi: '受身', gimon: '疑問', hango: '反語', hikaku: '比較' };
+Object.keys(GROUP_OF_OLD).forEach(function (k) { LESSONS[k].group = GROUP_OF_OLD[k]; });
+Object.assign(LESSONS, LESSONS_A, LESSONS_B, LESSONS_C);
+const GROUPS = ['使役', '受身', '否定', '二重否定', '部分否定', '禁止', '疑問', '反語', '詠嘆', '比較', '選択', '仮定', '限定', '抑揚', '累加', '願望', '可能', '比況', '再読文字'];
+const P = [].concat(P_OLD, P_A, P_A2, P_B, P_C).map(function (p, i) { return { p: p, i: i }; })
+  .sort(function (a, b) { return GROUPS.indexOf(LESSONS[a.p.lesson].group) - GROUPS.indexOf(LESSONS[b.p.lesson].group) || a.i - b.i; })
+  .map(function (x) { return x.p; });
+</script>
+
+<script>
+(function () {
+  "use strict";
+  var KEYS = { yomu: 'kanbun-lv1-yomu', tsukeru: 'kanbun-lv1-tsukeru', lv2: 'kanbun-lv2', lv3: 'kanbun-lv3', lv4: 'kanbun-lv4' };
+  var solved = { yomu: [], tsukeru: [], lv2: [], lv3: [], lv4: [] };
+  Object.keys(KEYS).forEach(function (m) {
+    try { var v = JSON.parse(localStorage.getItem(KEYS[m]) || '[]'); if (Array.isArray(v)) solved[m] = v; } catch (e) {}
+  });
+  function save(m) { try { localStorage.setItem(KEYS[m], JSON.stringify(solved[m])); } catch (e) {} }
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  var chars = $('chars'), result = $('result'), qno = $('qno'), qtag = $('qtag'), hint = $('hint'), lead = $('lead');
+  var checkBtn = $('check'), clearBtn = $('clear'), showBtn = $('show'), dots = $('dots'), palette = $('palette');
+  var yomibox = $('yomibox'), plabel = $('plabel');
+  var levelTabs = Array.prototype.slice.call(document.querySelectorAll('.tab[data-level]'));
+  var modeTabs = Array.prototype.slice.call(document.querySelectorAll('.tab[data-mode]'));
+  var ABC = ['ア', 'イ', 'ウ', 'エ'];
+
+  var LEAD = {
+    yomu: '返り点のとおりに、字を読む順にタップしよう。読まない字はタップしない。',
+    tsukeru: '読み方（書き下し文）のとおりに読めるように、白文に返り点を付けよう。',
+    lv2: '句形ごとに、型をつかんでから、書き下し文と訳を選ぼう。',
+    lv3: '文章や漢詩を読んで、共通テストの形で答えよう。意味に迷ったら、注と書き下し文を見る。',
+    lv4: '印のついた字の意味を、書き下し文を手がかりに選ぼう。ふつうの意味とちがう字に注意。'
+  };
+
+  function fresh(mode, q) {
+    if (mode === 'yomu') return { seq: [], status: 'edit', flags: [], fails: 0, msg: '' };
+    return { marks: q.bai.split('').map(function () { return ''; }), status: 'edit', flags: [], sel: 0, fails: 0, wrongCount: 0, msg: '' };
+  }
+  var S = { yomu: Q.map(function (q) { return fresh('yomu', q); }), tsukeru: Q.map(function (q) { return fresh('tsukeru', q); }) };
+  var S2 = {};
+  P.forEach(function (p) { S2[p.id] = { step: 1, wrong: { 1: [], 2: [] }, msg: '', fails: 0 }; });
+  var cur4 = 0, grp4 = GROUPS4[0];
+  var S4 = {};
+  VW.forEach(function (w) { S4[w.id] = { wrong: [], msg: '', fails: 0, done: false }; });
+  function L4() { return grp4 === 'すべて' ? VW : VW.filter(function (w) { return w.group === grp4; }); }
+  var level = 1, mode = 'yomu', cur = 0, cur2 = 0, cur3 = 0, grp2 = GROUPS[0], view3 = 'kun';
+  var S3 = {};
+  T.forEach(function (t) { S3[t.id] = { qi: 0, wrong: [], msg: '', fails: 0, done: false }; });
+  function renderL4() {
+    var items = L4(), w = items[cur4], s = S4[w.id];
+    var ngroups = $('groups4'); ngroups.textContent = '';
+    GROUPS4.concat(['すべて']).forEach(function (g) {
+      var it = g === 'すべて' ? VW : VW.filter(function (x) { return x.group === g; });
+      var n = it.filter(function (x) { return solved.lv4.indexOf(x.id) >= 0; }).length;
+      var b = el('button', 'chip' + (n === it.length ? ' alldone' : ''), g); b.type = 'button'; b.dataset.g = g;
+      b.setAttribute('aria-pressed', String(g === grp4)); b.appendChild(el('small', null, n + '/' + it.length)); ngroups.appendChild(b);
+    });
+    $('q4no').textContent = (cur4 + 1) + ' / ' + items.length;
+    $('q4tag').textContent = w.group;
+    lead.textContent = LEAD.lv4;
+    var v = $('vert4'); v.textContent = ''; v.className = 'vert shi';
+    var p = el('p'), parts = w.bai.split(/〔|〕/);
+    parts.forEach(function (t, i) { if (!t) return; if (i % 2 === 1) p.appendChild(el('span', 'hl', t)); else p.appendChild(document.createTextNode(t)); });
+    v.appendChild(p);
+    v.style.height = (w.bai.replace(/[〔〕]/g, '').length * 1.1 + 1) + 'em';
+    $('gotyomi4').textContent = w.yomi;
+    $('q4q').textContent = '「' + w.w + '」の意味として、最も適当なものを選べ。';
+    var o = $('opts4'); o.textContent = '';
+    if (s.done) { $('q4q').textContent = ''; }
+    else w.opts.forEach(function (txt, k) {
+      var b = el('button', 'opt plain'); b.type = 'button'; b.dataset.k = String(k);
+      b.appendChild(el('span', 'ltr', ABC[k])); b.appendChild(el('span', null, txt));
+      if (s.wrong.indexOf(k) >= 0) { b.classList.add('wrong'); b.disabled = true; }
+      o.appendChild(b);
+    });
+    var h = $('hint4');
+    if (s.msg) { h.textContent = s.msg; h.className = 'hint bad'; }
+    else if (!s.done) { h.textContent = '書き下し文の中で、印のついた字がどう読まれているかを見よう。'; h.className = 'hint'; }
+    else { h.textContent = ''; h.className = 'hint'; }
+    var r = $('result4'); r.textContent = '';
+    if (!s.done) { r.hidden = true; r.className = ''; return; }
+    r.hidden = false; r.className = 'result ok';
+    r.appendChild(el('p', 'verdict', s.fails === 0 ? '正解！' : '正解！'));
+    blocks(r, [['「' + w.w + '」の意味', w.opts[w.ans], 'body'], ['この字の主な意味', w.imi, 'body'], ['ここがポイント', w.tip, 'body']]);
+    var row = el('div', 'actions');
+    var nx = el('button', 'btn', cur4 < items.length - 1 ? '次の語へ' : '最初にもどる'); nx.type = 'button'; nx.id = 'next4';
+    row.appendChild(nx); r.appendChild(row);
+  }
+  function renderL3() {
+    var t = T[cur3], s = S3[t.id], isShi = t.kind === '漢詩';
+    $('q3no').textContent = (cur3 + 1) + ' / ' + T.length;
+    $('q3tag').textContent = t.kind + '・約' + t.bai.join('').replace(/[、。]/g, '').length + '字';
+    $('q3title').textContent = t.title;
+    lead.textContent = LEAD.lv3;
+    Array.prototype.forEach.call(document.querySelectorAll('.vtabs .chip'), function (c) { c.setAttribute('aria-pressed', String(c.dataset.v === view3)); });
+    var v = $('vert');
+    v.textContent = '';
+    v.className = 'vert' + (isShi ? ' shi' : '');
+    var lines = view3 === 'yomi' ? t.yomi : t.bai;
+    if (view3 === 'kun') {
+      v.classList.add('kun');
+      t.kt.forEach(function (line) {
+        var p = el('p');
+        line.forEach(function (m) {
+          var c = parseClause(m);
+          c.chars.forEach(function (ch, i) {
+            var k = el('span', 'k' + (c.link[i] ? ' lk' : '') + (c.skip.indexOf(i) >= 0 ? ' sk' : ''));
+            k.appendChild(document.createTextNode(ch));
+            if (c.marks[i]) k.appendChild(el('span', 'm', c.marks[i]));
+            p.appendChild(k);
+          });
+          if (c.punct) p.appendChild(document.createTextNode(c.punct));
+        });
+        v.appendChild(p);
+      });
+    } else lines.forEach(function (line) { v.appendChild(el('p', null, line)); });
+    var mx = Math.max.apply(null, lines.map(function (l) { return l.length; }));
+    v.style.height = Math.min(19, mx * 1.08 + 1) + 'em';
+    $('vnote').hidden = !(v.scrollWidth > v.clientWidth + 4);
+    var nt = $('notes');
+    nt.textContent = '';
+    t.notes.forEach(function (n) {
+      var li = el('li'); li.appendChild(el('b', null, n[0])); li.appendChild(document.createTextNode('　' + n[1])); nt.appendChild(li);
+    });
+    var o = $('opts3');
+    o.textContent = '';
+    if (s.done) {
+      $('q3label').textContent = '';
+      $('q3q').textContent = '';
+    } else {
+      var q = t.qs[s.qi];
+      $('q3label').textContent = '問' + (s.qi + 1) + ' / ' + t.qs.length;
+      $('q3q').textContent = q.q;
+      q.opts.forEach(function (txt, k) {
+        var b = el('button', 'opt plain'); b.type = 'button'; b.dataset.k = String(k);
+        b.appendChild(el('span', 'ltr', ABC[k])); b.appendChild(el('span', null, txt));
+        if (s.wrong.indexOf(k) >= 0) { b.classList.add('wrong'); b.disabled = true; }
+        o.appendChild(b);
+      });
+    }
+    var h = $('hint3');
+    if (s.msg) { h.textContent = s.msg; h.className = 'hint bad'; }
+    else if (!s.done) { h.textContent = '本文を読んで、根拠になる部分を探してから選ぼう。'; h.className = 'hint'; }
+    else { h.textContent = ''; h.className = 'hint'; }
+    var r = $('result3');
+    r.textContent = '';
+    if (!s.done) { r.hidden = true; r.className = ''; return; }
+    r.hidden = false; r.className = 'result ok';
+    r.appendChild(el('p', 'verdict', s.fails === 0 ? '全問、一発で正解！' : '全問正解！'));
+    blocks(r, [['訳', t.yaku, 'body'], ['ここがポイント', t.tip, 'body']]);
+    var row = el('div', 'actions');
+    var nx = el('button', 'btn', cur3 < T.length - 1 ? '次の文章へ' : '最初にもどる'); nx.type = 'button'; nx.id = 'next3';
+    row.appendChild(nx); r.appendChild(row);
+  }
+  function L2() {
+    if (grp2 === 'すべて') return P;
+    return P.filter(function (p) { return LESSONS[p.lesson].group === grp2; });
+  }
+  function renderGroups() {
+    var host = $('groups');
+    host.textContent = '';
+    GROUPS.concat(['すべて']).forEach(function (g) {
+      var items = g === 'すべて' ? P : P.filter(function (p) { return LESSONS[p.lesson].group === g; });
+      var n = items.filter(function (p) { return solved.lv2.indexOf(p.id) >= 0; }).length;
+      var b = el('button', 'chip' + (n === items.length ? ' alldone' : ''), g);
+      b.type = 'button';
+      b.dataset.g = g;
+      b.setAttribute('aria-pressed', String(g === grp2));
+      b.appendChild(el('small', null, n + '/' + items.length));
+      host.appendChild(b);
+    });
+  }
+
+  function buildCells(host, q, marks, o) {
+    host.textContent = '';
+    var skip = q.skip || [];
+    var pos = {};
+    if (o.numbers) { pos = o.numbers; }
+    else if (o.order) o.order.forEach(function (idx, k) { pos[idx] = (pos[idx] || []).concat(k + 1); });
+    Array.from(q.bai).forEach(function (ch, i) {
+      var cell = el(o.interactive ? 'button' : 'span', 'cell');
+      if (o.interactive) {
+        cell.type = 'button';
+        cell.dataset.i = String(i);
+        cell.setAttribute('aria-label', ch + '、' + (marks[i] ? marks[i] : '返り点なし') + (pos[i] ? '、' + [].concat(pos[i]).join('・') + '番目' : ''));
+      }
+      if (o.sel === i) cell.classList.add('sel');
+      if (o.picked && pos[i]) cell.classList.add('picked');
+      if (o.flags && o.flags[i]) cell.classList.add(o.flags[i]);
+      if (o.allOk) cell.classList.add('ok');
+      var ord = el('span', 'ord');
+      if (o.showSkip && skip.indexOf(i) >= 0) { ord.classList.add('skip'); ord.textContent = '置き字'; }
+      else if (pos[i]) { [].concat(pos[i]).forEach(function (n) { ord.appendChild(el('b', null, String(n))); }); }
+      cell.appendChild(ord);
+      cell.appendChild(el('span', 'ch', ch));
+      cell.appendChild(el('span', 'mk', marks[i] || ''));
+      host.appendChild(cell);
+    });
+  }
+
+  function blocks(host, rows) {
+    rows.forEach(function (r) {
+      var blk = el('div', 'blk');
+      blk.appendChild(el('p', 'label', r[0]));
+      blk.appendChild(el('p', r[2], r[1]));
+      host.appendChild(blk);
+    });
+  }
+
+  /* ---------- レベル1 ---------- */
+  function renderResult(q, s) {
+    result.textContent = '';
+    if (s.status !== 'ok' && s.status !== 'shown') { result.hidden = true; result.className = ''; return; }
+    result.hidden = false;
+    result.className = 'result ' + (s.status === 'ok' ? 'ok' : 'shown');
+    result.appendChild(el('p', 'verdict', s.status === 'ok' ? '正解！' : '正解はこれ'));
+    if (s.status === 'shown') result.appendChild(el('p', 'sub', '番号の順に読む。確かめたら、もう一度やってみよう。'));
+    var order = readOrder(q.key, q.skip || []);
+    var seq = order.map(function (i) { return q.bai.charAt(i); }).join(' → ');
+    var rows = [['読む順', seq, 'order-line']];
+    if (mode === 'yomu') rows.push(['書き下し文', q.yomi, 'yomi']);
+    rows.push(['訳', q.yaku, 'body'], ['ここがポイント', q.tip, 'body']);
+    blocks(result, rows);
+    var row = el('div', 'actions');
+    if (s.status === 'shown') { var rt = el('button', 'btn ghost', 'もう一度やってみる'); rt.type = 'button'; rt.id = 'retry'; row.appendChild(rt); }
+    var nx = el('button', 'btn', cur < Q.length - 1 ? '次の問題へ' : '最初にもどる'); nx.type = 'button'; nx.id = 'next';
+    row.appendChild(nx);
+    result.appendChild(row);
+  }
+
+  function renderL1() {
+    var q = Q[cur], s = S[mode][cur];
+    var locked = s.status === 'ok' || s.status === 'shown';
+    var yomu = mode === 'yomu';
+    var order = readOrder(q.key, q.skip || []);
+    qno.textContent = (cur + 1) + ' / ' + Q.length;
+    qtag.textContent = q.tag;
+    lead.textContent = LEAD[mode];
+    modeTabs.forEach(function (t) { t.setAttribute('aria-selected', t.dataset.mode === mode ? 'true' : 'false'); });
+    yomibox.hidden = yomu;
+    palette.hidden = yomu;
+    $('yomiq').textContent = q.yomi;
+    plabel.textContent = yomu ? '返り点つき' : '白文';
+
+    if (yomu) {
+      var numbers = {};
+      var src = locked ? order : s.seq;
+      src.forEach(function (idx, k) { numbers[idx] = k + 1; });
+      buildCells(chars, q, q.key, { interactive: !locked, flags: s.flags, numbers: numbers, picked: !locked, showSkip: locked, allOk: s.status === 'ok' });
+    } else {
+      buildCells(chars, q, s.marks, { interactive: !locked, sel: locked ? -1 : s.sel, flags: s.flags, order: locked ? order : null, showSkip: locked, allOk: s.status === 'ok' });
+    }
+    Array.prototype.forEach.call(palette.querySelectorAll('button'), function (b) { b.disabled = locked; });
+    checkBtn.hidden = locked; clearBtn.hidden = locked;
+    showBtn.hidden = locked || s.fails < 1;
+
+    if (s.msg) { hint.textContent = s.msg; hint.className = 'hint bad'; }
+    else if (locked) { hint.textContent = '字の右の番号が、読む順。'; hint.className = 'hint'; }
+    else if (yomu) { hint.textContent = '読む順に字をタップ。番号のついた字をもう一度タップすると、そこからやり直せる。'; hint.className = 'hint'; }
+    else { hint.textContent = '字をタップして選び、下の返り点ボタンで付けよう。'; hint.className = 'hint'; }
+
+    renderResult(q, s);
+  }
+
+  /* ---------- レベル2 ---------- */
+  function renderResult2(p, s) {
+    var host = $('result2');
+    host.textContent = '';
+    if (s.step < 3) { host.hidden = true; host.className = ''; return; }
+    host.hidden = false;
+    host.className = 'result ok';
+    host.appendChild(el('p', 'verdict', s.fails === 0 ? '2問とも一発で正解！' : '正解！'));
+    var order = readOrder(p.key, p.skip || [], p.re);
+    var seq = order.map(function (i) { return p.bai.charAt(i); }).join(' → ');
+    blocks(host, [['読む順', seq, 'order-line'], ['書き下し文', p.yomi, 'yomi'], ['訳', p.yaku, 'body'], ['ここがポイント', p.tip, 'body']]);
+    var row = el('div', 'actions');
+    var nx = el('button', 'btn', cur2 < L2().length - 1 ? '次の問題へ' : '最初にもどる'); nx.type = 'button'; nx.id = 'next2';
+    row.appendChild(nx);
+    host.appendChild(row);
+  }
+
+  function renderL2() {
+    var p = L2()[cur2], s = S2[p.id], L = LESSONS[p.lesson];
+    renderGroups();
+    var done = s.step === 3;
+    $('q2no').textContent = (cur2 + 1) + ' / ' + L2().length;
+    $('q2tag').textContent = L.name;
+    $('lname').textContent = L.name;
+    $('lkata').textContent = L.kata;
+    $('lyomi').textContent = L.yomi;
+    $('lpoint').textContent = L.point;
+    lead.textContent = LEAD.lv2;
+
+    var numbers = {};
+    if (done) readOrder(p.key, p.skip || [], p.re).forEach(function (idx, k) { numbers[idx] = (numbers[idx] || []).concat(k + 1); });
+    buildCells($('chars2'), p, p.key, { interactive: false, numbers: numbers, showSkip: done });
+
+    var got = $('gotline');
+    got.hidden = s.step < 2;
+    $('gotyomi').textContent = p.yomi;
+
+    var opts = $('opts');
+    opts.textContent = '';
+    if (done) {
+      $('qtext2').textContent = '';
+    } else {
+      var r = s.step === 1 ? p.r1 : p.r2;
+      $('qtext2').textContent = s.step === 1 ? '問1　書き下し文は、どれ？' : '問2　訳は、どれ？';
+      r.opts.forEach(function (t, k) {
+        var b = el('button', 'opt' + (s.step === 2 ? ' plain' : ''));
+        b.type = 'button';
+        b.dataset.k = String(k);
+        b.appendChild(el('span', 'ltr', ABC[k]));
+        b.appendChild(el('span', null, t));
+        if (s.wrong[s.step].indexOf(k) >= 0) { b.classList.add('wrong'); b.disabled = true; }
+        opts.appendChild(b);
+      });
+    }
+    var h = $('hint2');
+    if (s.msg) { h.textContent = s.msg; h.className = 'hint bad'; }
+    else if (!done) { h.textContent = s.step === 1 ? '返り点を見て、読む順を考えてから選ぼう。' : '書き下し文をもとに、意味を考えよう。'; h.className = 'hint'; }
+    else { h.textContent = '字の右の番号が、読む順。'; h.className = 'hint'; }
+    renderResult2(p, s);
+  }
+
+  /* ---------- 共通 ---------- */
+  function renderDots() {
+    var curIdx = level === 1 ? cur : level === 2 ? cur2 : level === 3 ? cur3 : cur4;
+    var list = level === 1 ? solved[mode] : level === 2 ? solved.lv2 : level === 3 ? solved.lv3 : solved.lv4;
+    var items = level === 1 ? Q : level === 2 ? L2() : level === 3 ? T : L4();
+    dots.textContent = '';
+    items.forEach(function (it, i) {
+      var d = el('button', 'dot', String(i + 1));
+      d.type = 'button';
+      d.classList.toggle('done', list.indexOf(it.id) >= 0);
+      d.classList.toggle('cur', i === curIdx);
+      d.setAttribute('aria-current', i === curIdx ? 'true' : 'false');
+      d.setAttribute('aria-label', '問題' + (i + 1));
+      d.addEventListener('click', function () { if (level === 1) cur = i; else if (level === 2) cur2 = i; else if (level === 3) cur3 = i; else cur4 = i; render(); });
+      dots.appendChild(d);
+    });
+  }
+
+  function render(focusIdx) {
+    levelTabs.forEach(function (t) { t.setAttribute('aria-selected', String(parseInt(t.dataset.level, 10) === level)); });
+    $('modes').hidden = level !== 1;
+    $('rule').hidden = level !== 1;
+    $('qtop').hidden = level !== 1;
+    $('q2top').hidden = level !== 2;
+    $('q3top').hidden = level !== 3;
+    $('q4top').hidden = level !== 4;
+    $('eyebrow').textContent = ['', '漢文 ・ レベル1 基礎', '漢文 ・ レベル2 標準', '漢文 ・ レベル3 共通テスト形式', '漢文 ・ レベル4 重要語'][level];
+    $('h1').textContent = ['', '返り点の練習', '句形の練習', '文章・漢詩を読む', '重要語・助字'][level];
+    if (level === 1) renderL1(); else if (level === 2) renderL2(); else if (level === 3) renderL3(); else renderL4();
+    renderDots();
+    if (level === 1 && focusIdx != null) {
+      var b = chars.querySelector('[data-i="' + focusIdx + '"]');
+      if (b) { try { b.focus({ preventScroll: true }); } catch (e) {} }
+    }
+  }
+
+  function scrollTo(node) {
+    try { node.scrollIntoView({ block: 'nearest' }); } catch (e) {}
+  }
+  function markSolved(key, q) {
+    if (solved[key].indexOf(q.id) < 0) { solved[key].push(q.id); save(key); }
+  }
+
+  levelTabs.forEach(function (t) {
+    t.addEventListener('click', function () { level = parseInt(t.dataset.level, 10); render(); });
+  });
+  modeTabs.forEach(function (t) {
+    t.addEventListener('click', function () { mode = t.dataset.mode; render(); });
+  });
+
+  chars.addEventListener('click', function (e) {
+    var c = e.target.closest('.cell[data-i]');
+    if (!c) return;
+    var i = parseInt(c.dataset.i, 10), s = S[mode][cur];
+    s.msg = '';
+    if (mode === 'yomu') {
+      var at = s.seq.indexOf(i);
+      if (at >= 0) s.seq = s.seq.slice(0, at); else s.seq.push(i);
+      s.status = 'edit'; s.flags = [];
+    } else {
+      s.sel = i;
+    }
+    render(i);
+  });
+
+  palette.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-m]');
+    if (!b || b.disabled || mode !== 'tsukeru') return;
+    var s = S.tsukeru[cur];
+    s.marks[s.sel] = b.dataset.m;
+    s.msg = '';
+    if (s.status === 'wrong') { s.status = 'edit'; s.flags = []; }
+    render(s.sel);
+  });
+
+  checkBtn.addEventListener('click', function () {
+    var q = Q[cur], s = S[mode][cur];
+    var order = readOrder(q.key, q.skip || []);
+    s.msg = '';
+    if (mode === 'yomu') {
+      var need = order.length, k = -1;
+      for (var j = 0; j < Math.min(s.seq.length, need); j++) { if (s.seq[j] !== order[j]) { k = j; break; } }
+      if (k < 0 && s.seq.length > need) k = need;
+      if (k >= 0) {
+        s.fails += 1; s.status = 'edit';
+        s.flags = q.bai.split('').map(function () { return ''; });
+        s.flags[s.seq[k]] = 'ng';
+        s.msg = (k === need) ? 'もう読み終わっているよ。赤い字は、読まない字。' : (k + 1) + '番目がちがうよ（赤い字）。その字をタップすると、そこからやり直せる。';
+      } else if (s.seq.length < need) {
+        s.msg = 'まだ最後まで読めていないよ。続きをタップしよう。';
+      } else {
+        s.status = 'ok'; s.flags = []; markSolved(mode, q);
+      }
+    } else {
+      var wrong = [];
+      q.key.forEach(function (m, i) { if (s.marks[i] !== m) wrong.push(i); });
+      if (!wrong.length) {
+        s.status = 'ok'; s.flags = []; markSolved(mode, q);
+      } else {
+        s.fails += 1; s.status = 'wrong'; s.wrongCount = wrong.length;
+        s.flags = q.key.map(function () { return ''; });
+        wrong.forEach(function (i) { s.flags[i] = 'ng'; });
+        s.msg = wrong.length + 'か所ちがう字があるよ（赤い字）。見直してみよう。';
+      }
+    }
+    render();
+    if (s.status === 'ok') scrollTo(result);
+  });
+
+  clearBtn.addEventListener('click', function () {
+    var s = S[mode][cur];
+    if (mode === 'yomu') s.seq = [];
+    else s.marks = s.marks.map(function () { return ''; });
+    s.status = 'edit'; s.flags = []; s.msg = '';
+    render(mode === 'tsukeru' ? s.sel : null);
+  });
+
+  showBtn.addEventListener('click', function () {
+    var q = Q[cur], s = S[mode][cur];
+    if (mode === 'yomu') s.seq = readOrder(q.key, q.skip || []);
+    else s.marks = q.key.slice();
+    s.status = 'shown'; s.flags = []; s.msg = '';
+    render();
+    scrollTo(result);
+  });
+
+  result.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    if (b.id === 'retry') {
+      var fails = S[mode][cur].fails;
+      S[mode][cur] = fresh(mode, Q[cur]);
+      S[mode][cur].fails = fails;
+      render(mode === 'tsukeru' ? 0 : null);
+    } else if (b.id === 'next') {
+      cur = cur < Q.length - 1 ? cur + 1 : 0;
+      render();
+      scrollTo($('qtop'));
+    }
+  });
+
+  $('opts').addEventListener('click', function (e) {
+    var b = e.target.closest('button.opt');
+    if (!b || b.disabled) return;
+    var k = parseInt(b.dataset.k, 10), p = L2()[cur2], s = S2[p.id];
+    var r = s.step === 1 ? p.r1 : p.r2;
+    if (k === r.ans) {
+      s.msg = '';
+      s.step += 1;
+      if (s.step === 3) markSolved('lv2', p);
+    } else {
+      s.wrong[s.step].push(k);
+      s.fails += 1;
+      s.msg = r.why[k];
+    }
+    render();
+    if (s.step === 3) scrollTo($('result2'));
+  });
+
+  $('result2').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b || b.id !== 'next2') return;
+    cur2 = cur2 < L2().length - 1 ? cur2 + 1 : 0;
+    render();
+    scrollTo($('q2top'));
+  });
+
+  $('opts4').addEventListener('click', function (e) {
+    var b = e.target.closest('button.opt');
+    if (!b || b.disabled) return;
+    var k = parseInt(b.dataset.k, 10), w = L4()[cur4], s = S4[w.id];
+    if (k === w.ans) { s.msg = ''; s.done = true; markSolved('lv4', w); }
+    else { s.wrong.push(k); s.fails += 1; s.msg = w.why[k]; }
+    render();
+    if (s.done) scrollTo($('result4'));
+  });
+  $('result4').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b || b.id !== 'next4') return;
+    cur4 = cur4 < L4().length - 1 ? cur4 + 1 : 0;
+    render(); scrollTo($('q4top'));
+  });
+  $('groups4').addEventListener('click', function (e) {
+    var b = e.target.closest('button.chip');
+    if (!b) return;
+    grp4 = b.dataset.g; cur4 = 0; render();
+  });
+  $('opts3').addEventListener('click', function (e) {
+    var b = e.target.closest('button.opt');
+    if (!b || b.disabled) return;
+    var k = parseInt(b.dataset.k, 10), t = T[cur3], s = S3[t.id], q = t.qs[s.qi];
+    if (k === q.ans) {
+      s.msg = ''; s.wrong = []; s.qi += 1;
+      if (s.qi >= t.qs.length) { s.done = true; markSolved('lv3', t); }
+    } else {
+      s.wrong.push(k); s.fails += 1; s.msg = q.why[k];
+    }
+    render();
+    if (s.done) scrollTo($('result3'));
+  });
+  $('result3').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b || b.id !== 'next3') return;
+    cur3 = cur3 < T.length - 1 ? cur3 + 1 : 0;
+    render(); scrollTo($('q3top'));
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.vtabs .chip'), function (c) {
+    c.addEventListener('click', function () { view3 = c.dataset.v; render(); });
+  });
+  $('groups').addEventListener('click', function (e) {
+    var b = e.target.closest('button.chip');
+    if (!b) return;
+    grp2 = b.dataset.g;
+    cur2 = 0;
+    render();
+  });
+
+  EX.forEach(function (x, i) {
+    var host = $('ex' + (i + 1));
+    var box = el('div', 'chars mini');
+    host.appendChild(box);
+    buildCells(box, x, x.marks, { interactive: false, order: readOrder(x.marks, x.skip || []) });
+    host.appendChild(el('span', 'yomi-mini', x.yomi));
+  });
+
+  render();
+})();
+</script>
